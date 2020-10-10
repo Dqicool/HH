@@ -1,0 +1,11 @@
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943421._000001.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943421._000002.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943421._000003.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943450._000002.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943450._000003.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943450._000004.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943450._000006.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943450._000007.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943382._000001.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943382._000002.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361105.PoPy8_Wminustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943382._000003.LepUniv_ttbar.root

@@ -1,0 +1,15 @@
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943412._000001.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943412._000002.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943412._000003.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943412._000004.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10201_p3985.sv2_Le/user.dbaronmo.21943412._000005.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943442._000001.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943442._000002.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943442._000003.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943442._000004.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943442._000005.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r10724_p3985.sv2_Le/user.dbaronmo.21943442._000006.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943374._000001.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943374._000002.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943374._000003.LepUniv_ttbar.root
+/mnt/SSD/HH//data/user.dbaronmo.v24.mc.361102.PoPy8_Wplustaunu.M4.e3601_s3126_r9364_p3985.sv2_Le/user.dbaronmo.21943374._000004.LepUniv_ttbar.root
