@@ -2,7 +2,7 @@
 #include "genAna.h"
 
 //#define MT
-
+#define DEBUG
 ROOT::Math::PtEtaPhiMVector TLV2MLV(TLorentzVector v)
 {
     ROOT::Math::PtEtaPhiMVector ret(v.Pt(), v.Eta(), v.Phi(), v.M());
@@ -27,7 +27,7 @@ std::vector<std::string> readFileList(const char *file_name)
     return ret;
 }
 
-void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
+void convert(std::vector<std::string> in_filelist, char *out_file)
 {
 #ifdef MT
     ROOT::EnableImplicitMT(4);
@@ -35,7 +35,9 @@ void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
     ROOT::RDataFrame df("NOMINAL", in_filelist);
     if(df.HasColumn("weight_mc"))
     {
-        auto ef = df.Define("bjet_0_p4_n", TLV2MLV, {"bjet_0_p4"})
+        auto ef = df.Filter([](TLorentzVector v){return v.Pt() > 0.1;}, {"bjet_0_p4"})
+                    .Filter([](TLorentzVector v){return v.Pt() > 0.1;}, {"bjet_1_p4"})
+                    .Define("bjet_0_p4_n", TLV2MLV, {"bjet_0_p4"})
                     .Define("bjet_0_matched_p4_n", TLV2MLV, {"bjet_0_matched_p4"})
                     .Define("bjet_1_p4_n", TLV2MLV, {"bjet_1_p4"})
                     .Define("bjet_1_matched_p4_n", TLV2MLV, {"bjet_1_matched_p4"})
@@ -60,6 +62,7 @@ void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
                     .Define("tau_0_truth_vis_neutral_others_p4_n", TLV2MLV, {"tau_0_truth_vis_neutral_others_p4"})
                     .Define("tau_0_truth_vis_neutral_p4_n", TLV2MLV, {"tau_0_truth_vis_neutral_p4"})
                     .Define("tau_0_truth_vis_neutral_pions_p4_n", TLV2MLV, {"tau_0_truth_vis_neutral_pions_p4"});
+
         std::vector<std::string> snap_list
                         {"HLT_e120_lhloose", "HLT_e140_lhloose_nod0", "HLT_e24_lhmedium_L1EM20VH", "HLT_e26_lhtight_nod0_ivarloose", 
                         "HLT_e60_lhmedium", "HLT_e60_lhmedium_nod0", "HLT_mu20_iloose_L1MU15", "HLT_mu26_ivarmedium", "HLT_mu50", 
@@ -155,11 +158,12 @@ void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
                         "triggerSF_em_NOMINAL", 
                         
                         "weight_mc", "weight_mc_v", "weight_total" };
-        ef.Snapshot("NOMINAL", out_sel_tree, snap_list);
+        ef.Snapshot("NOMINAL", out_file, snap_list);
     }
     else
     {
-        auto ef = df
+        auto ef = df.Filter([](TLorentzVector v){return v.Pt() > 0.1;}, {"bjet_0_p4"})
+                    .Filter([](TLorentzVector v){return v.Pt() > 0.1;}, {"bjet_1_p4"})
                     .Define("bjet_0_p4_n", TLV2MLV, {"bjet_0_p4"})
                     .Define("bjet_1_p4_n", TLV2MLV, {"bjet_1_p4"})
                     .Define("elec_0_p4_n", TLV2MLV, {"elec_0_p4"})
@@ -171,13 +175,14 @@ void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
                     .Define("met_reco_p4_n", TLV2MLV, {"met_reco_p4"})
                     .Define("muon_0_p4_n", TLV2MLV, {"muon_0_p4"})
                     .Define("tau_0_p4_n", TLV2MLV, {"tau_0_p4"});
+                    
         std::vector<std::string> snap_list
                     {"HLT_e120_lhloose", "HLT_e140_lhloose_nod0", "HLT_e24_lhmedium_L1EM20VH", "HLT_e26_lhtight_nod0_ivarloose", "HLT_e60_lhmedium", "HLT_e60_lhmedium_nod0", 
                     "HLT_mu20_iloose_L1MU15", "HLT_mu26_ivarmedium", "HLT_mu50", 
                     
-                    "bjet_0", "bjet_0_b_tagged_MV2c10_FixedCutBEff_85", "bjet_0_origin", "bjet_0_p4", "bjet_0_type", 
+                    "bjet_0", "bjet_0_b_tagged_MV2c10_FixedCutBEff_85", "bjet_0_origin", "bjet_0_p4_n", "bjet_0_type", 
                     
-                    "bjet_1", "bjet_1_b_tagged_MV2c10_FixedCutBEff_85", "bjet_1_origin", "bjet_1_p4", "bjet_1_type", 
+                    "bjet_1", "bjet_1_b_tagged_MV2c10_FixedCutBEff_85", "bjet_1_origin", "bjet_1_p4_n", "bjet_1_type", 
                     
                     "eleTrigMatch_0_HLT_e120_lhloose", "eleTrigMatch_0_HLT_e140_lhloose_nod0", 
                     "eleTrigMatch_0_HLT_e24_lhmedium_L1EM20VH", "eleTrigMatch_0_HLT_e26_lhtight_nod0_ivarloose", "eleTrigMatch_0_HLT_e60_lhmedium", "eleTrigMatch_0_HLT_e60_lhmedium_nod0", 
@@ -185,32 +190,32 @@ void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
                     
                     "elec_0", "elec_0_cluster_eta", "elec_0_cluster_eta_be2", "elec_0_id_medium", "elec_0_id_tight", "elec_0_iso_FCLoose", 
                     "elec_0_iso_FCLoose_FixedRad", "elec_0_iso_FCTight", "elec_0_iso_FCTightTrackOnly_FixedRad", "elec_0_iso_FixedCutLoose", "elec_0_iso_FixedCutTight", 
-                    "elec_0_iso_FixedCutTightCaloOnly", "elec_0_p4", "elec_0_q", "elec_0_trk_d0_sig", "elec_0_trk_pvx_z0_sintheta", "elec_0_trk_z0_sintheta", 
+                    "elec_0_iso_FixedCutTightCaloOnly", "elec_0_p4_n", "elec_0_q", "elec_0_trk_d0_sig", "elec_0_trk_pvx_z0_sintheta", "elec_0_trk_z0_sintheta", 
                     
                     "event_is_bad_batman", "event_number", "lb_number", 
                     
-                    "ljet_0", "ljet_0_b_tagged_MV2c10_FixedCutBEff_85", "ljet_0_flavorlabel", "ljet_0_flavorlabel_cone", "ljet_0_flavorlabel_part", "ljet_0_origin", "ljet_0_p4", "ljet_0_type", 
+                    "ljet_0", "ljet_0_b_tagged_MV2c10_FixedCutBEff_85", "ljet_0_flavorlabel", "ljet_0_flavorlabel_cone", "ljet_0_flavorlabel_part", "ljet_0_origin", "ljet_0_p4_n", "ljet_0_type", 
                     
-                    "ljet_1", "ljet_1_b_tagged_MV2c10_FixedCutBEff_85", "ljet_1_flavorlabel", "ljet_1_flavorlabel_cone", "ljet_1_flavorlabel_part", "ljet_1_origin", "ljet_1_p4", "ljet_1_type", 
+                    "ljet_1", "ljet_1_b_tagged_MV2c10_FixedCutBEff_85", "ljet_1_flavorlabel", "ljet_1_flavorlabel_cone", "ljet_1_flavorlabel_part", "ljet_1_origin", "ljet_1_p4_n", "ljet_1_type", 
                     
                     "ljet_2", "ljet_2_b_tag_quantile", "ljet_2_b_tag_score", "ljet_2_b_tagged_MV2c10_FixedCutBEff_85", "ljet_2_cleanJet_EC_LooseBad", "ljet_2_fjvt", 
-                    "ljet_2_flavorlabel", "ljet_2_flavorlabel_cone", "ljet_2_flavorlabel_part", "ljet_2_is_Jvt_HS", "ljet_2_jvt", "ljet_2_origin", "ljet_2_p4", "ljet_2_q", "ljet_2_type", 
+                    "ljet_2_flavorlabel", "ljet_2_flavorlabel_cone", "ljet_2_flavorlabel_part", "ljet_2_is_Jvt_HS", "ljet_2_jvt", "ljet_2_origin", "ljet_2_p4_n", "ljet_2_q", "ljet_2_type", 
                     "ljet_2_width", 
                     
                     "ljet_3", "ljet_3_b_tag_quantile", "ljet_3_b_tag_score", "ljet_3_b_tagged_MV2c10_FixedCutBEff_85", "ljet_3_cleanJet_EC_LooseBad", "ljet_3_fjvt", 
-                    "ljet_3_flavorlabel", "ljet_3_flavorlabel_cone", "ljet_3_flavorlabel_part", "ljet_3_is_Jvt_HS", "ljet_3_jvt", "ljet_3_origin", "ljet_3_p4", "ljet_3_q", "ljet_3_type", 
+                    "ljet_3_flavorlabel", "ljet_3_flavorlabel_cone", "ljet_3_flavorlabel_part", "ljet_3_is_Jvt_HS", "ljet_3_jvt", "ljet_3_origin", "ljet_3_p4_n", "ljet_3_q", "ljet_3_type", 
                     "ljet_3_width", 
                     
                     "ljet_4", "ljet_4_b_tag_quantile", "ljet_4_b_tag_score", "ljet_4_b_tagged_MV2c10_FixedCutBEff_85", "ljet_4_cleanJet_EC_LooseBad", "ljet_4_fjvt", 
-                    "ljet_4_flavorlabel", "ljet_4_flavorlabel_cone", "ljet_4_flavorlabel_part", "ljet_4_is_Jvt_HS", "ljet_4_jvt", "ljet_4_origin", "ljet_4_p4", "ljet_4_q", "ljet_4_type", 
+                    "ljet_4_flavorlabel", "ljet_4_flavorlabel_cone", "ljet_4_flavorlabel_part", "ljet_4_is_Jvt_HS", "ljet_4_jvt", "ljet_4_origin", "ljet_4_p4_n", "ljet_4_q", "ljet_4_type", 
                     "ljet_4_width", 
                     
-                    "met_reco_p4", 
+                    "met_reco_p4_n", 
                     
                     "muTrigMatch_0_HLT_mu20_iloose_L1MU15", "muTrigMatch_0_HLT_mu26_ivarmedium", "muTrigMatch_0_HLT_mu50", "muTrigMatch_0_trigger_matched", 
 
                     "muon_0", "muon_0_id_medium", "muon_0_id_tight", "muon_0_iso_FCLoose", "muon_0_iso_FCLoose_FixedRad", "muon_0_iso_FCTight", "muon_0_iso_FCTightTrackOnly_FixedRad", 
-                    "muon_0_iso_FixedCutLoose", "muon_0_iso_FixedCutTight", "muon_0_iso_FixedCutTightCaloOnly", "muon_0_p4", "muon_0_q", "muon_0_trk_d0_sig", "muon_0_trk_pvx_z0_sig", 
+                    "muon_0_iso_FixedCutLoose", "muon_0_iso_FixedCutTight", "muon_0_iso_FixedCutTightCaloOnly", "muon_0_p4_n", "muon_0_q", "muon_0_trk_d0_sig", "muon_0_trk_pvx_z0_sig", 
                     "muon_0_trk_pvx_z0_sintheta", "muon_0_trk_z0_sintheta", 
                     
                     "n_actual_int", "n_actual_int_cor", "n_avg_int", "n_avg_int_cor", "n_bjets_MV2c10_FixedCutBEff_85", 
@@ -223,15 +228,46 @@ void selection(std::vector<std::string> in_filelist, char *out_sel_tree)
                     "tau_0_ele_bdt_medium_retuned", "tau_0_ele_bdt_score", "tau_0_ele_bdt_score_retuned", "tau_0_ele_bdt_score_trans", "tau_0_ele_bdt_score_trans_retuned", "tau_0_ele_bdt_tight", 
                     "tau_0_ele_bdt_tight_retuned", "tau_0_ele_match_lhscore", "tau_0_ele_olr_pass", "tau_0_jet_bdt_loose", "tau_0_jet_bdt_medium", "tau_0_jet_bdt_score", "tau_0_jet_bdt_score_trans", 
                     "tau_0_jet_bdt_tight", "tau_0_jet_bdt_veryloose", "tau_0_jet_rnn_loose", "tau_0_jet_rnn_medium", "tau_0_jet_rnn_score", "tau_0_jet_rnn_score_trans", "tau_0_jet_rnn_tight", 
-                    "tau_0_n_charged_tracks", "tau_0_p4", "tau_0_q" };
-        ef.Snapshot("NOMINAL", out_sel_tree, snap_list);
+                    "tau_0_n_charged_tracks", "tau_0_p4_n", "tau_0_q" };
+        ef.Snapshot("NOMINAL", out_file, snap_list);
     }
     
     
 }
 
+void combineMeta(std::vector<std::string> in_filelist, const char *out_file)
+{
+    std::vector<TH1D> metas;
+    for (auto entry:in_filelist){
+        TFile* in_file = TFile::Open(&entry[0], "READ");
+        TH1D tmp = *((TH1D*)in_file->Get("h_metadata"));
+        metas.push_back(tmp);
+        in_file->Close();
+    }
+    for(uint i=1; i < metas.size(); i++)
+    {
+        metas[0].Add(&metas[i]);
+        std::cout<<metas[i].GetBinContent(6)<<"\n";
+    }
+    TFile* out = TFile::Open(out_file, "UPDATE");
+    std::cout<<metas[0].GetBinContent(6)<<"\n";
+    metas[0].Write();
+
+    out->Close();
+}
+
+#ifndef DEBUG
 int main(int argc, char **argv)
 {
     auto fl = readFileList(argv[1]);
-    selection(fl, argv[2]);
+    convert(fl, argv[2]);
+    combineMeta(fl, argv[2]);
 }
+#else
+int main(int argc, char **argv)
+{
+    auto fl = readFileList("/mnt/NVME/HH/data/fileLists/361104.txt");
+    convert(fl, "debug.root");
+    combineMeta(fl, "debug.root");
+}
+#endif

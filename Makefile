@@ -1,7 +1,7 @@
 PWD = $(shell pwd)
 ROOTFLAGS = $(shell root-config --cflags)
 ROOTLIBS  = -L/usr/lib/root -lGenVector -lEve -lEG -lGeom -lGed -lRGL -lGui -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lMathMore -lThread -lMultiProc -lROOTDataFrame -pthread -lm -ldl -rdynamic
-ROOTINC   = -I/mnt/SSD/VBS-PHE/src
+ROOTINC   = -I/mnt/NVME/HH/src
 
 CXX = g++
 
@@ -13,3 +13,9 @@ selection: src/selection.cpp src/genAna.h
 
 draw: src/draw.cpp src/genAna.h
 	$(CXX) $(ROOTFLAGS) -g src/draw.cpp -o build/draw $(ROOTLIBS) $(ROOTINC)
+
+stack: src/stack.cpp src/genAna.h
+	$(CXX) $(ROOTFLAGS) -g src/stack.cpp -o build/stack $(ROOTLIBS) $(ROOTINC)
+
+test: src/test.cpp src/genAna.h
+	$(CXX) $(ROOTFLAGS) -g src/test.cpp -o build/test $(ROOTLIBS) $(ROOTINC)
