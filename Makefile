@@ -8,6 +8,9 @@ CXX = g++
 convert: src/convert.cpp src/genAna.h
 	$(CXX) $(ROOTFLAGS) -g src/convert.cpp -o build/convert $(ROOTLIBS) $(ROOTINC)
 
+presel: src/presel.cpp src/presel.h src/genAna.h
+	$(CXX) $(ROOTFLAGS) -g src/presel.cpp -o build/presel $(ROOTLIBS) $(ROOTINC)
+
 selection: src/selection.cpp src/genAna.h
 	$(CXX) $(ROOTFLAGS) -g src/selection.cpp -o build/selection $(ROOTLIBS) $(ROOTINC)
 
@@ -19,3 +22,6 @@ stack: src/stack.cpp src/genAna.h
 
 test: src/test.cpp src/genAna.h
 	$(CXX) $(ROOTFLAGS) -g src/test.cpp -o build/test $(ROOTLIBS) $(ROOTINC)
+
+test2: src/test2.cpp src/genAna.h src/presel.h
+	$(CXX) $(ROOTFLAGS) -g src/test2.cpp -o build/test2 $(ROOTLIBS) $(ROOTINC)

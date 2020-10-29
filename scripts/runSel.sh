@@ -1,8 +1,8 @@
 SECONDS=0
     HHDIR='/mnt/NVME/HH/'
     EXE='/build/selection'
-    DATA='/output/convert_out/'
-    OUT='/output/sel_out/'
+    DATA='/output/02_presel_out/'
+    OUT='/output/03_sel_out/'
 
     rm -rf $HHDIR/$OUT/*
     mkdir -p $HHDIR/$OUT

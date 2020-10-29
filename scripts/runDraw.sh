@@ -1,8 +1,8 @@
 SECONDS=0
     HHDIR='/mnt/NVME/HH/'
     EXE='/build/draw'
-    DATA='/output/sel_out/'
-    OUT='/output/plot_out/'
+    DATA='/output/03_sel_out/'
+    OUT='/output/04_plot_out/'
 
     rm -rf $HHDIR/$OUT/*
     mkdir -p $HHDIR/$OUT

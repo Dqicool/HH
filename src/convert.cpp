@@ -88,8 +88,11 @@ void convert(std::vector<std::string> in_filelist, char *out_file)
                         "elec_0_NOMINAL_EleEffSF_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_2018_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_TightLLH_d0z0_v13_isolFCTight", 
                         "elec_0_NOMINAL_EleEffSF_offline_RecoTrk", "elec_0_NOMINAL_EleEffSF_offline_TightLLH_d0z0_v13", 
                         "elec_0_NOMINAL_efficiency_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_2018_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_TightLLH_d0z0_v13_isolFCTight", 
+                        
                         "elec_0_cluster_eta", "elec_0_cluster_eta_be2", "elec_0_id_medium", "elec_0_id_tight", "elec_0_iso_FCLoose", "elec_0_iso_FCLoose_FixedRad", "elec_0_iso_FCTight", 
-                        "elec_0_iso_FCTightTrackOnly_FixedRad", "elec_0_iso_FixedCutLoose", "elec_0_iso_FixedCutTight", "elec_0_iso_FixedCutTightCaloOnly", "elec_0_matched_classifierParticleOrigin", 
+                        "elec_0_iso_FCTightTrackOnly_FixedRad", "elec_0_iso_FixedCutLoose", "elec_0_iso_FixedCutTight", "elec_0_iso_FixedCutTightCaloOnly", 
+                        
+                        "elec_0_matched_classifierParticleOrigin", 
                         "elec_0_matched_classifierParticleType", "elec_0_matched_origin", "elec_0_matched_p4_n", "elec_0_matched_pdgId", "elec_0_matched_pz", "elec_0_matched_q", "elec_0_matched_type", 
                         "elec_0_p4_n", "elec_0_q", "elec_0_trk_d0_sig", "elec_0_trk_pvx_z0_sintheta", "elec_0_trk_z0_sintheta", 
                         
@@ -131,8 +134,9 @@ void convert(std::vector<std::string> in_filelist, char *out_file)
                         
                         "muon_0", "muon_0_NOMINAL_MuEffSF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_QualMedium", "muon_0_NOMINAL_MuEffSF_HLT_mu26_ivarmedium_OR_HLT_mu50_QualMedium", "muon_0_NOMINAL_MuEffSF_IsoFCLoose", 
                         "muon_0_NOMINAL_MuEffSF_IsoFCLoose_FixedRad", "muon_0_NOMINAL_MuEffSF_IsoFCTight", "muon_0_NOMINAL_MuEffSF_IsoFCTightTrackOnly", "muon_0_NOMINAL_MuEffSF_IsoFCTightTrackOnly_FixedRad", 
-                        "muon_0_NOMINAL_MuEffSF_IsoFCTight_FixedRad", "muon_0_NOMINAL_MuEffSF_IsoFixedCutHighPtTrackOnly", "muon_0_NOMINAL_MuEffSF_Reco_QualMedium", "muon_0_NOMINAL_MuEffSF_TTVA", "muon_0_id_medium", 
-                        "muon_0_id_tight", "muon_0_iso_FCLoose", "muon_0_iso_FCLoose_FixedRad", "muon_0_iso_FCTight", "muon_0_iso_FCTightTrackOnly_FixedRad", "muon_0_iso_FixedCutLoose", "muon_0_iso_FixedCutTight", 
+                        "muon_0_NOMINAL_MuEffSF_IsoFCTight_FixedRad", "muon_0_NOMINAL_MuEffSF_IsoFixedCutHighPtTrackOnly", "muon_0_NOMINAL_MuEffSF_Reco_QualMedium", "muon_0_NOMINAL_MuEffSF_TTVA", 
+                        
+                        "muon_0_id_medium", "muon_0_id_tight", "muon_0_iso_FCLoose", "muon_0_iso_FCLoose_FixedRad", "muon_0_iso_FCTight", "muon_0_iso_FCTightTrackOnly_FixedRad", "muon_0_iso_FixedCutLoose", "muon_0_iso_FixedCutTight", 
                         "muon_0_iso_FixedCutTightCaloOnly", 
                         
                         "muon_0_matched_classifierParticleOrigin", "muon_0_matched_classifierParticleType", "muon_0_matched_p4_n", "muon_0_matched_pdgId", "muon_0_matched_pz", 

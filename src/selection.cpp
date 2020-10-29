@@ -1,93 +1,55 @@
-#include "genAna.h"
+#include "selection.h"
 
 //#define DEBUG
 
 #define LUMI (58.4501+43.5873+36.2369) //fb-1
 
-void copyMeta(const char* infile, const char* outfile)
-{
-    TFile* in = TFile::Open(infile, "READ");
-    TH1D* tmp = (TH1D*)in->Get("h_metadata");
-    TFile* out = TFile::Open(outfile, "UPDATE");
-    tmp->Write();
-    out->Close();
-    in->Close();
-}
-
-struct weight_rela
-{
-    double xspb;
-    double kfac;
-    double fileff;
-    double sumofw;
-};
-
-
-struct weight_rela getWeightComps(const char* infile_name){
-    std::string sentence(infile_name);
-    std::istringstream iss(sentence);
-    std::vector<std::string> tokens;
-    std::string token;
-    while (std::getline(iss, token, '.')) 
-    {
-        if (!token.empty())
-            tokens.push_back(token);
-    }
-    std::string sentence2(tokens[0]);
-    std::istringstream iss2(sentence2);
-    std::vector<std::string> tokens2;
-    std::string token2;
-    while (std::getline(iss2, token2, '/')) 
-    {
-        if (!token2.empty())
-            tokens2.push_back(token2);
-    }
-    ROOT::RDataFrame df("hehe", "/mnt/NVME/HH/output/weight_related.root");
-    auto ef = df.Filter([token2](std::string s){return s.compare(token2) == 0;}, {"SampleID"});
-    auto xspb = (ef.Take<double>("xspb").GetValue())[0];
-    auto kfac = (ef.Take<double>("kfac").GetValue())[0];
-    auto fileff = (ef.Take<double>("fileff").GetValue())[0];
-
-    TFile* in = TFile::Open(infile_name, "READ");
-    TH1D* tmp = (TH1D*)in->Get("h_metadata");
-    double sumofw = tmp->GetBinContent(8);
-    in->Close();
-    
-    return {xspb, kfac, fileff, sumofw};
-}
-
 void selection(const char* infile, const char* outfile)
 {
+    #ifndef DEBUG
     ROOT::EnableImplicitMT();
+    #endif
     ROOT::RDataFrame df("NOMINAL", infile);
     
     auto ef = df
-        .Filter([](ROOT::Math::PtEtaPhiMVector v){return v.Pt() > 30;}, {"bjet_0_p4_n"})
-        .Filter([](ROOT::Math::PtEtaPhiMVector v){return v.Pt() > 30;}, {"bjet_1_p4_n"})
-        .Filter([](ROOT::Math::PtEtaPhiMVector v, uint is_tau){return v.Pt() > 10 && is_tau;}, {"tau_0_p4_n", "tau_0_jet_rnn_tight"})
-        .Filter([](ROOT::Math::PtEtaPhiMVector v){return v.Pt() > 10;}, {"met_reco_p4_n"})
         .Define("m_bb",[](ROOT::Math::PtEtaPhiMVector vb0, ROOT::Math::PtEtaPhiMVector vb1){return (vb0+vb1).M();}, {"bjet_0_p4_n", "bjet_1_p4_n"})
-        .Define("delta_R_bb", [](ROOT::Math::PtEtaPhiMVector a, ROOT::Math::PtEtaPhiMVector b){return std::sqrt((a.eta()-b.eta())*(a.eta()-b.eta()) + (a.phi()-b.phi())*(a.phi()-b.phi()));}, {"bjet_0_p4_n", "bjet_1_p4_n"} )
-        .Define("lep_type", getLepType, {"elec_0", "muon_0"})
-        .Define("lep_0_p4_n", getLepP4, {"lep_type", "elec_0_p4_n","muon_0_p4_n"})
-        .Define("v_position", getVPos, {"met_reco_p4_n", "tau_0_p4_n", "lep_0_p4_n", "lep_type"})
+        .Define("delta_R_bb", getDeltaR, {"bjet_0_p4_n", "bjet_1_p4_n"} )
+        .Define("v_position", getVPos, {"met_reco_p4_n", "tau_0_p4_n", "lep_0_p4_n"})
         .Define("vh_p4_n", getVHP4, {"v_position", "met_reco_p4_n", "tau_0_p4_n", "lep_0_p4_n"})
         .Define("vl_p4_n", getVLP4, {"v_position", "met_reco_p4_n", "tau_0_p4_n", "lep_0_p4_n"})
-        .Define("m_tau_vis", mTauTauVis, {"tau_0_p4_n","elec_0_p4_n","muon_0_p4_n","elec_0", "muon_0"})
-        .Define("m_tau_col", mTauTauColin, {"met_reco_p4_n", "tau_0_p4_n","elec_0_p4_n","muon_0_p4_n",})
-        .Filter([](double mvis){return mvis > 0;}, {"m_tau_col"});
+        .Define("m_tau_vis", getMTauTauVis, {"tau_0_p4_n","elec_0_p4_n","muon_0_p4_n","elec_0", "muon_0"})
+        .Define("m_tau_col", getMTauTauColin, {"tau_0_p4_n", "lep_0_p4_n", "vh_p4_n", "vl_p4_n", "v_position"})
+        .Filter([](double mtau){return mtau > 0;}, {"m_tau_col"})
+        .Define("delta_R_tautau", getDeltaR, {"lep_0_p4_n", "tau_0_p4_n"})
+        .Define("m_4_body", getM4Body, {"tau_0_p4_n", "lep_0_p4_n", "vh_p4_n", "vl_p4_n", "bjet_0_p4_n", "bjet_1_p4_n"})
+        .Define("top_type", getTopType, {"tau_0_p4_n", "lep_0_p4_n", "vh_p4_n", "vl_p4_n", "bjet_0_p4_n", "bjet_1_p4_n"})
+        .Define("top_0_p4_n", getTop0P4,   {"top_type", "tau_0_p4_n", "lep_0_p4_n", "vh_p4_n", "vl_p4_n", "bjet_0_p4_n", "bjet_1_p4_n"})
+        .Define("top_1_p4_n", getTop1P4,   {"top_type", "tau_0_p4_n", "lep_0_p4_n", "vh_p4_n", "vl_p4_n", "bjet_0_p4_n", "bjet_1_p4_n"})
+        .Define("m_top_0", [](ROOT::Math::PtEtaPhiMVector top0){return top0.M();}, {"top_0_p4_n"})
+        .Define("m_top_1", [](ROOT::Math::PtEtaPhiMVector top1){return top1.M();}, {"top_1_p4_n"})
+        .Define("top_0_deltaR_con", getTop0DeltaRBTau, {"top_type", "tau_0_p4_n", "bjet_0_p4_n", "bjet_1_p4_n"})
+        .Define("top_1_deltaR_con", getTop1DeltaRBTau, {"top_type", "lep_0_p4_n", "bjet_0_p4_n", "bjet_1_p4_n"})
+        
+        //.Filter("m_bb > 60 && m_bb < 110")
+        //.Filter("m_tau_col > 50 && m_tau_col < 150")
+        //.Filter("delta_R_tautau < 2")
+        // .Filter("top_0_deltaR_con > 2")
+        // .Filter("top_1_deltaR_con > 2")
+        ;
 
-    if(df.HasColumn("weight_mc")){
+    if(df.HasColumn("weight_mc"))
+    {
         weight_rela weight_comp = getWeightComps(infile);
         std::cout<<infile<<"\t"<<weight_comp.xspb<<"\t"<<weight_comp.kfac<<"\t"<<weight_comp.fileff<<"\t"<<weight_comp.sumofw<<"\n";
-        auto ff = ef.Define("weight", [weight_comp](double weight_mc){return LUMI*weight_comp.xspb*1000*weight_comp.fileff*weight_comp.kfac/weight_comp.sumofw*weight_mc;}, {"weight_mc"});
-        ff.Snapshot("NOMINAL", outfile);
-
+        auto ff = ef.Define("weight", [weight_comp](double weight_mc, double sf){return LUMI*weight_comp.xspb*1000*weight_comp.fileff*weight_comp.kfac/weight_comp.sumofw*weight_mc*sf;}, {"weight_mc", "total_sf"});
+        std::vector<std::string> snap_column = {"m_bb", "delta_R_bb", "m_tau_vis", "m_tau_col", "delta_R_tautau", "m_4_body", "m_top_0", "m_top_1", "top_0_deltaR_con", "top_1_deltaR_con", "weight"};
+        ff.Snapshot("NOMINAL", outfile, snap_column);
     }
     else
     {
         auto ff = ef.Define("weight", []{return (double)1.0;});
-        ff.Snapshot("NOMINAL", outfile);
+        std::vector<std::string> snap_column = {"m_bb", "delta_R_bb", "m_tau_vis", "m_tau_col", "delta_R_tautau", "m_4_body", "m_top_0", "m_top_1", "top_0_deltaR_con", "top_1_deltaR_con", "weight"};
+        ff.Snapshot("NOMINAL", outfile, snap_column);
     }
 }
 

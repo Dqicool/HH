@@ -1,20 +1,37 @@
 #include "genAna.h"
 #define LUMI 139e3
 #include<THStack.h>
+#include<TLegend.h>
 #define IMAGEX 3000
 #define IMAGEY 2000
 
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string>
+#include <fstream>
+
+
 //#define debug
 using namespace std;
-TH1D getDraw(const char* file, const char* dist,  Color_t col)
+
+bool file_exists_test (const std::string& name) {
+  struct stat buffer;   
+  return (stat (name.c_str(), &buffer) == 0); 
+}
+
+TH1D * getDraw(const char* file, const char* dist,  Color_t col)
 {
-    auto histoname = "h_" + (string)dist;
-    TFile *f = TFile::Open(file, "read");
-    TH1D *h = (TH1D*)f->Get(&histoname[0]);
-    h->SetFillColor(col);
-    h->SetLineColor(col);
-    h->SetMarkerColor(col);
-    return (*h);
+    TH1D *h = NULL;
+    if(file_exists_test(file))
+    {
+        auto histoname = "h_" + (string)dist;
+        TFile *f = TFile::Open(file, "read");
+        h = (TH1D*)f->Get(&histoname[0]);
+        h->SetFillColor(col);
+        h->SetLineColor(col);
+        h->SetMarkerColor(col);
+    }
+    return h;
 }
 
 
@@ -22,92 +39,99 @@ void plotProp(const char* outfile, const char* dist, bool truth){
     ROOT::EnableImplicitMT(24);
     TH1::SetDefaultSumw2();
     //loading data from files
+        bool onlyZZ=0;
+        bool onlyTT=0;
         std::vector<std::vector<std::string>> files;
         std::vector<Color_t> color_vec;
         std::vector<std::string> cata;
         std::vector<std::string> color_name;
         //SINGLE_V
             std::vector<std::string> single_V;
-            single_V.push_back("output/plot_out/361100.txt.root");
-            //single_V.push_back("output/plot_out/361101.txt.root");
-            single_V.push_back("output/plot_out/361102.txt.root");
-            single_V.push_back("output/plot_out/361103.txt.root");
-            single_V.push_back("output/plot_out/361104.txt.root");
-            single_V.push_back("output/plot_out/361105.txt.root");
-            single_V.push_back("output/plot_out/361106.txt.root");
-            single_V.push_back("output/plot_out/361107.txt.root");
-            //single_V.push_back("output/plot_out/361108.txt.root");
+            if(!onlyZZ && !onlyTT){
+                single_V.push_back("output/04_plot_out/361100.txt.root");
+                single_V.push_back("output/04_plot_out/361101.txt.root");
+                single_V.push_back("output/04_plot_out/361102.txt.root");
+                single_V.push_back("output/04_plot_out/361103.txt.root");
+                single_V.push_back("output/04_plot_out/361104.txt.root");
+                single_V.push_back("output/04_plot_out/361105.txt.root");
+                single_V.push_back("output/04_plot_out/361106.txt.root");
+                single_V.push_back("output/04_plot_out/361107.txt.root");
+                single_V.push_back("output/04_plot_out/361108.txt.root");
+            }
 
         //ZZ
             std::vector<std::string> zz;
-            #ifndef debug
-            //zz.push_back("output/plot_out/363355.txt.root");
-            zz.push_back("output/plot_out/363356.txt.root");
-            #endif
+            if(!onlyTT){
+                zz.push_back("output/04_plot_out/363355.txt.root");
+                zz.push_back("output/04_plot_out/363356.txt.root");
+            }
+            
         //WZ
             std::vector<std::string> wz;
-            #ifndef debug
-            //wz.push_back("output/plot_out/363357.txt.root");
-            wz.push_back("output/plot_out/363358.txt.root");
-            wz.push_back("output/plot_out/363489.txt.root");
-            #endif
+            if(!onlyZZ && !onlyTT){
+                wz.push_back("output/04_plot_out/363357.txt.root");
+                wz.push_back("output/04_plot_out/363358.txt.root");
+                wz.push_back("output/04_plot_out/363489.txt.root");
+            }       
         //ztt
             std::vector<std::string> ztt;
-            #ifndef debug
-            //ztt.push_back("output/plot_out/364128.txt.root");
-            ztt.push_back("output/plot_out/364129.txt.root");
-            ztt.push_back("output/plot_out/364130.txt.root");
-            ztt.push_back("output/plot_out/364131.txt.root");
-            ztt.push_back("output/plot_out/364132.txt.root");
-            ztt.push_back("output/plot_out/364133.txt.root");
-            ztt.push_back("output/plot_out/364134.txt.root");
-            ztt.push_back("output/plot_out/364135.txt.root");
-            ztt.push_back("output/plot_out/364136.txt.root");
-            ztt.push_back("output/plot_out/364137.txt.root");
-            ztt.push_back("output/plot_out/364138.txt.root");
-            ztt.push_back("output/plot_out/364139.txt.root");
-            ztt.push_back("output/plot_out/364140.txt.root");
-            ztt.push_back("output/plot_out/364141.txt.root");
-            #endif
+            if(!onlyZZ && !onlyTT){
+                ztt.push_back("output/04_plot_out/364128.txt.root");
+                ztt.push_back("output/04_plot_out/364129.txt.root");
+                ztt.push_back("output/04_plot_out/364130.txt.root");
+                ztt.push_back("output/04_plot_out/364131.txt.root");
+                ztt.push_back("output/04_plot_out/364132.txt.root");
+                ztt.push_back("output/04_plot_out/364133.txt.root");
+                ztt.push_back("output/04_plot_out/364134.txt.root");
+                ztt.push_back("output/04_plot_out/364135.txt.root");
+                ztt.push_back("output/04_plot_out/364136.txt.root");
+                ztt.push_back("output/04_plot_out/364137.txt.root");
+                ztt.push_back("output/04_plot_out/364138.txt.root");
+                ztt.push_back("output/04_plot_out/364139.txt.root");
+                ztt.push_back("output/04_plot_out/364140.txt.root");
+                ztt.push_back("output/04_plot_out/364141.txt.root");
+            }
         //qq4l
             std::vector<std::string> qq4l;
-            #ifndef debug
-            qq4l.push_back("output/plot_out/364250.txt.root");
-            qq4l.push_back("output/plot_out/364253.txt.root");
-            qq4l.push_back("output/plot_out/364254.txt.root");
-            qq4l.push_back("output/plot_out/364255.txt.root");
-            #endif
+            if(!onlyZZ && !onlyTT){
+                qq4l.push_back("output/04_plot_out/364250.txt.root");
+                qq4l.push_back("output/04_plot_out/364253.txt.root");
+                qq4l.push_back("output/04_plot_out/364254.txt.root");
+                qq4l.push_back("output/04_plot_out/364255.txt.root");
+            }
         //ttbar
             std::vector<std::string> ttbar;
-            #ifndef debug
-            ttbar.push_back("output/plot_out/410470.txt.root");
-            #endif
+            if(!onlyZZ){
+                ttbar.push_back("output/04_plot_out/410470.txt.root");
+            }
         //single_top
             std::vector<std::string> single_t;
-            #ifndef debug
-            single_t.push_back("output/plot_out/410644.txt.root");
-            single_t.push_back("output/plot_out/410645.txt.root");
-            single_t.push_back("output/plot_out/410658.txt.root");
-            single_t.push_back("output/plot_out/410659.txt.root");
-            #endif
+            if(!onlyZZ && !onlyTT){
+                single_t.push_back("output/04_plot_out/410644.txt.root");
+                single_t.push_back("output/04_plot_out/410645.txt.root");
+                single_t.push_back("output/04_plot_out/410658.txt.root");
+                single_t.push_back("output/04_plot_out/410659.txt.root");
+            }
         //Wt
             std::vector<std::string> wt;
-            #ifndef debug
-            single_t.push_back("output/plot_out/410646.txt.root");
-            single_t.push_back("output/plot_out/410647.txt.root");
-            #endif
+            if(!onlyZZ && !onlyTT){
+                single_t.push_back("output/04_plot_out/410646.txt.root");
+                single_t.push_back("output/04_plot_out/410647.txt.root");
+            }
         //DATA
             std::vector<std::string> data;
-            data.push_back("output/plot_out/data15_13TeV.txt.root");
-            data.push_back("output/plot_out/data16_13TeV.txt.root");
-            data.push_back("output/plot_out/data17_13TeV.txt.root");
-            data.push_back("output/plot_out/data18_13TeV.txt.root");
+            if(!onlyZZ && !onlyTT){
+                data.push_back("output/04_plot_out/data15_13TeV.txt.root");
+                data.push_back("output/04_plot_out/data16_13TeV.txt.root");
+                data.push_back("output/04_plot_out/data17_13TeV.txt.root");
+                data.push_back("output/04_plot_out/data18_13TeV.txt.root");
+            }
             
 
-        files =         { single_V,      zz,     wz,     ztt,        qq4l,       single_t,   wt,        ttbar };
-        cata =          {"single_V",    "zz",   "wz",   "ztt",      "qq4l",     "single_t", "wt",       "ttbar" };
-        color_vec =     { kOrange,       kRed,   kPink,  kMagenta,   kViolet,    kBlue,      kAzure,     kCyan};
-        color_name =    {"kOrange",     "kRed", "kPink","kMagenta", "kViolet",  "kBlue",    "kAzure",   "kCyan"};
+        files =         { zz,       single_V,     wz,     ztt,        qq4l,       single_t,   wt,        ttbar };
+        cata =          {"zz",      "single_V",   "wz",   "ztt",      "qq4l",     "single_t", "wt",       "ttbar" };
+        color_vec =     { kBlue,    kOrange,       kPink,  kMagenta,   kViolet,    kRed,      kAzure,     kCyan};
+        color_name =    {"Blue",    "Orange",      "Pink", "Magenta",  "Violet",   "Red",     "Azure",    "Cyan"};
         
     //stack MCs
         string st_n = (string)dist + "_stack";
@@ -119,7 +143,9 @@ void plotProp(const char* outfile, const char* dist, bool truth){
         {
             for (uint j = 0; j < (files[i]).size(); j++)
             {
-                histo_mc.push_back(getDraw(&(files[i][j])[0], dist, color_vec[i]));
+                auto h = getDraw(&(files[i][j])[0], dist, color_vec[i]);
+                
+                if (h != NULL) histo_mc.push_back(*h);
             }
             std::cout<<cata[i] + " is in color " + color_name[i]<<endl;
         }
@@ -139,7 +165,11 @@ void plotProp(const char* outfile, const char* dist, bool truth){
         std::vector<TH1D> histo_data;
         string h_n_data = (string)dist + "data_hist";
         for(auto entry:data)
-            histo_data.push_back(getDraw(entry.data(), dist, kBlack));
+        {
+            auto h = getDraw(entry.data(), dist, kBlack);
+            if (&h != NULL) histo_data.push_back(*h);
+        }
+            
         TH1D * h_inc_data = new TH1D(&h_n_data[0],"",nbins,xmin,xmax);
         for(auto h:histo_data)
             h_inc_data->Add(&h);
@@ -159,6 +189,7 @@ void plotProp(const char* outfile, const char* dist, bool truth){
     //drawstack
         //sr plot
             TCanvas c1("c1","",IMAGEX,IMAGEY);
+            stack->SetTitle(st_n.data());
             h_inc->SetMarkerColor(kBlack);
             h_inc->SetLineColor(kBlack);
             h_inc->SetFillColor(kBlack);
@@ -170,26 +201,49 @@ void plotProp(const char* outfile, const char* dist, bool truth){
             h_inc_data->SetMarkerSize(2.0f);
             h_inc_data->SetLineWidth(3.0f);
             h_inc_data->Draw("E1, SAME");
+
+            TLegend legend(0.6,0.7,0.9,0.9);
+            legend.AddEntry(h_inc_data, "data", "lpf");
+            legend.AddEntry(&histo_mc.back(), "ttbar", "lpf");
+            legend.AddEntry(&histo_mc[0], "zz", "lpf");
+            legend.Draw();
+
             auto save_name = "plots/" + (string)dist + "_stack.png";
+            if(onlyTT) save_name = "plots/onlyTT/" + (string)dist + "_stack.png";
+            else if(onlyZZ) save_name = "plots/onlyZZ/" + (string)dist + "_stack.png";
             c1.SaveAs(&save_name[0]);
-        // // output
-        // double xs, errerr;
-        // xs = h_inc->IntegralAndError(1,1000, errerr);
-        // cout<<"*************************"<<endl;
-        // cout<<"XS = "<<xs<<"\t"<<errerr<<endl;
-        // cout<<"*************************"<<endl;
+        // output
+        double xs, errerr;
+        xs = h_inc->IntegralAndError(1,50, errerr);
+        cout<<"*************************"<<endl;
+        cout<<"XS = "<<xs<<"\t"<<errerr<<endl;
+        cout<<"*************************"<<endl;
 
 }
 
 int main()
 {
     cout<<"mbb:"<<endl;
-    plotProp("output/stack_out/mbb.root", "M_bb", 0);
+    plotProp("output/05_stack_out/mbb.root", "m_bb", 0);
     cout<<"drbb:"<<endl;
-    plotProp("output/stack_out/drbb.root", "Delta_R_bb", 0);
+    plotProp("output/05_stack_out/drbb.root", "delta_R_bb", 0);
     cout<<"mtauvis:"<<endl;
-    plotProp("output/stack_out/mtauvis.root", "M_tau_vis", 0);
+    plotProp("output/05_stack_out/mtauvis.root", "m_tau_vis", 0);
     cout<<"mtaucol:"<<endl;
-    plotProp("output/stack_out/mtaucol.root", "M_tau_col", 0);
+    plotProp("output/05_stack_out/mtaucol.root", "m_tau_col", 0);
+
+    cout<<"m4body:"<<endl;
+    plotProp("output/05_stack_out/m4body.root", "m_4_body", 0);
+    cout<<"mtop0:"<<endl;
+    plotProp("output/05_stack_out/mtop0.root", "m_top_0", 0);
+    cout<<"mtop1:"<<endl;
+    plotProp("output/05_stack_out/mtop1.root", "m_top_1", 0);
+    cout<<"drtt:"<<endl;
+    plotProp("output/05_stack_out/drtt.root", "delta_R_tautau", 0);
+
+    cout<<"drtop0cons:"<<endl;
+    plotProp("output/05_stack_out/drtop0cons.root", "top_0_deltaR_con", 0);
+    cout<<"drtop1cons:"<<endl;
+    plotProp("output/05_stack_out/drtop1cons.root", "top_1_deltaR_con", 0);
     
 }

@@ -1,8 +1,8 @@
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10201_p3972.sv1_Le/user.dbaronmo.21920824._000001.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10201_p3972.sv1_Le/user.dbaronmo.21920824._000002.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10201_p3972.sv1_Le/user.dbaronmo.21920824._000003.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920885._000001.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920885._000002.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920885._000003.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r9364_p3972.sv1_Le/user.dbaronmo.21920761._000001.LepUniv_ttbar.root
-/mnt/SSD/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r9364_p3972.sv1_Le/user.dbaronmo.21920761._000002.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10201_p3972.sv1_Le/user.dbaronmo.21920824._000001.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10201_p3972.sv1_Le/user.dbaronmo.21920824._000002.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10201_p3972.sv1_Le/user.dbaronmo.21920824._000003.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920885._000001.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920885._000002.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920885._000003.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r9364_p3972.sv1_Le/user.dbaronmo.21920761._000001.LepUniv_ttbar.root
+/mnt/NVME/HH//data/user.dbaronmo.v24.mc.364255.Sh222_PDF30_lvvv.M4.e5916_s3126_r9364_p3972.sv1_Le/user.dbaronmo.21920761._000002.LepUniv_ttbar.root
