@@ -1,274 +1,244 @@
-#define DEBUG
-#include "presel.h"
+#include "genAna.h"
+#define CUDART_PI_F 3.1415926f
+#define Z_MASS 91.1876
 
-void presel(const char* infile, const char* outfile)
+double getdphi(double v1phi,  double v2phi)
 {
-    #ifndef DEBUG
-    ROOT::EnableImplicitMT();
-    #endif
-    ROOT::RDataFrame df("NOMINAL", infile);
+    double ret;
+    if(std::abs(v1phi - v2phi) > M_PI)
+        ret = ((double)(v1phi > 0) -  (double)(v1phi <= 0)) * (2 * M_PI - std::abs(v1phi - v2phi));
+    else
+        ret = v2phi - v1phi;
+    return ret;
+}
 
-    std::vector<std::string> all_branch_name_mc = {"HLT_e120_lhloose", "HLT_e140_lhloose_nod0", "HLT_e24_lhmedium_L1EM20VH", "HLT_e26_lhtight_nod0_ivarloose", 
-                        "HLT_e60_lhmedium", "HLT_e60_lhmedium_nod0", "HLT_mu20_iloose_L1MU15", "HLT_mu26_ivarmedium", "HLT_mu50", 
+float getPx(float pt,float phi)
+{
+    return pt * cosf(phi);
+}
 
-                        "NOMINAL_pileup_combined_weight", "NOMINAL_pileup_random_run_number", 
-                        
-                        "bjet_0", "bjet_0_b_tagged_MV2c10_FixedCutBEff_85", 
-                        "bjet_0_matched", "bjet_0_matched_classifierParticleOrigin", "bjet_0_matched_classifierParticleType", "bjet_0_matched_origin", 
-                        "bjet_0_matched_p4_n", "bjet_0_matched_pdgId", "bjet_0_matched_pz", "bjet_0_matched_q", "bjet_0_matched_status", "bjet_0_matched_type", 
-                        "bjet_0_origin", "bjet_0_p4_n", "bjet_0_type", 
-                        
-                        "bjet_1", "bjet_1_b_tagged_MV2c10_FixedCutBEff_85", "bjet_1_matched", 
-                        "bjet_1_matched_classifierParticleOrigin", "bjet_1_matched_classifierParticleType", "bjet_1_matched_origin", 
-                        "bjet_1_matched_p4_n", "bjet_1_matched_pdgId", "bjet_1_matched_pz", "bjet_1_matched_q", "bjet_1_matched_status", 
-                        "bjet_1_matched_type", "bjet_1_origin", "bjet_1_p4_n", "bjet_1_type", 
-                        
-                        "eleTrigMatch_0_HLT_e120_lhloose", 
-                        "eleTrigMatch_0_HLT_e140_lhloose_nod0", "eleTrigMatch_0_HLT_e24_lhmedium_L1EM20VH", "eleTrigMatch_0_HLT_e26_lhtight_nod0_ivarloose", 
-                        "eleTrigMatch_0_HLT_e60_lhmedium", "eleTrigMatch_0_HLT_e60_lhmedium_nod0", "eleTrigMatch_0_trigger_matched", 
-                        
-                        "elec_0", 
-                        "elec_0_NOMINAL_EleEffSF_Isolation_TightLLH_d0z0_v13_FCLoose", "elec_0_NOMINAL_EleEffSF_Isolation_TightLLH_d0z0_v13_FCTight", 
-                        "elec_0_NOMINAL_EleEffSF_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_2018_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_TightLLH_d0z0_v13_isolFCTight", 
-                        "elec_0_NOMINAL_EleEffSF_offline_RecoTrk", "elec_0_NOMINAL_EleEffSF_offline_TightLLH_d0z0_v13", 
-                        "elec_0_NOMINAL_efficiency_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_2018_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_TightLLH_d0z0_v13_isolFCTight", 
-                        
-                        "elec_0_cluster_eta", "elec_0_cluster_eta_be2", "elec_0_id_medium", "elec_0_id_tight", "elec_0_iso_FCLoose", "elec_0_iso_FCLoose_FixedRad", "elec_0_iso_FCTight", 
-                        "elec_0_iso_FCTightTrackOnly_FixedRad", "elec_0_iso_FixedCutLoose", "elec_0_iso_FixedCutTight", "elec_0_iso_FixedCutTightCaloOnly", 
-                        
-                        "elec_0_matched_classifierParticleOrigin", 
-                        "elec_0_matched_classifierParticleType", "elec_0_matched_origin", "elec_0_matched_p4_n", "elec_0_matched_pdgId", "elec_0_matched_pz", "elec_0_matched_q", "elec_0_matched_type", 
-                        "elec_0_p4_n", "elec_0_q", "elec_0_trk_d0_sig", "elec_0_trk_pvx_z0_sintheta", "elec_0_trk_z0_sintheta", 
-                        
-                        "event_is_bad_batman", "event_number", 
-                        
-                        "jet_NOMINAL_central_jets_global_effSF_JVT", 
-                        "jet_NOMINAL_central_jets_global_ineffSF_JVT", "jet_NOMINAL_forward_jets_global_effSF_JVT", "jet_NOMINAL_forward_jets_global_ineffSF_JVT", "jet_NOMINAL_global_effSF_MV2c10_FixedCutBEff_85", 
-                        "jet_NOMINAL_global_ineffSF_MV2c10_FixedCutBEff_85", 
-                        
-                        "ljet_0", "ljet_0_b_tagged_MV2c10_FixedCutBEff_85", "ljet_0_flavorlabel", "ljet_0_flavorlabel_cone", "ljet_0_flavorlabel_part", 
-                        "ljet_0_matched", "ljet_0_matched_classifierParticleOrigin", "ljet_0_matched_classifierParticleType", "ljet_0_matched_origin", "ljet_0_matched_p4_n", "ljet_0_matched_pdgId", 
-                        "ljet_0_matched_pz", "ljet_0_matched_q", "ljet_0_matched_status", "ljet_0_matched_type", "ljet_0_origin", "ljet_0_p4_n", "ljet_0_type", 
-                        
-                        "ljet_1", "ljet_1_b_tagged_MV2c10_FixedCutBEff_85", 
-                        "ljet_1_flavorlabel", "ljet_1_flavorlabel_cone", "ljet_1_flavorlabel_part", "ljet_1_matched", "ljet_1_matched_classifierParticleOrigin", "ljet_1_matched_classifierParticleType",
-                        "ljet_1_matched_origin", "ljet_1_matched_p4_n", "ljet_1_matched_pdgId", "ljet_1_matched_pz", "ljet_1_matched_q", "ljet_1_matched_status", "ljet_1_matched_type", "ljet_1_origin", 
-                        "ljet_1_p4_n", "ljet_1_type", 
-                        
-                        "ljet_2", "ljet_2_b_tag_quantile", "ljet_2_b_tag_score", "ljet_2_b_tagged_MV2c10_FixedCutBEff_85", "ljet_2_cleanJet_EC_LooseBad", "ljet_2_fjvt", 
-                        "ljet_2_flavorlabel", "ljet_2_flavorlabel_cone", "ljet_2_flavorlabel_part", "ljet_2_is_Jvt_HS", "ljet_2_jvt", "ljet_2_matched", "ljet_2_matched_classifierParticleOrigin", 
-                        "ljet_2_matched_classifierParticleType", "ljet_2_matched_mother_pdgId", "ljet_2_matched_mother_status", "ljet_2_matched_origin", "ljet_2_matched_p4_n", "ljet_2_matched_pdgId", 
-                        "ljet_2_matched_pz", "ljet_2_matched_q", "ljet_2_matched_status", "ljet_2_matched_type", "ljet_2_origin", "ljet_2_p4_n", "ljet_2_q", "ljet_2_type", "ljet_2_width", 
-                        
-                        "ljet_3", 
-                        "ljet_3_b_tag_quantile", "ljet_3_b_tag_score", "ljet_3_b_tagged_MV2c10_FixedCutBEff_85", "ljet_3_cleanJet_EC_LooseBad", "ljet_3_fjvt", "ljet_3_flavorlabel", "ljet_3_flavorlabel_cone", 
-                        "ljet_3_flavorlabel_part", "ljet_3_is_Jvt_HS", "ljet_3_jvt", "ljet_3_matched", "ljet_3_matched_classifierParticleOrigin", "ljet_3_matched_classifierParticleType", "ljet_3_matched_mother_pdgId", 
-                        "ljet_3_matched_mother_status", "ljet_3_matched_origin", "ljet_3_matched_p4_n", "ljet_3_matched_pdgId", "ljet_3_matched_pz", "ljet_3_matched_q", "ljet_3_matched_status", 
-                        "ljet_3_matched_type", "ljet_3_origin", "ljet_3_p4_n", "ljet_3_q", "ljet_3_type", "ljet_3_width", 
-                        
-                        "ljet_4", "ljet_4_b_tag_quantile", "ljet_4_b_tag_score", "ljet_4_b_tagged_MV2c10_FixedCutBEff_85", 
-                        "ljet_4_cleanJet_EC_LooseBad", "ljet_4_fjvt", "ljet_4_flavorlabel", "ljet_4_flavorlabel_cone", "ljet_4_flavorlabel_part", "ljet_4_is_Jvt_HS", "ljet_4_jvt", "ljet_4_matched", 
-                        "ljet_4_matched_classifierParticleOrigin", "ljet_4_matched_classifierParticleType", "ljet_4_matched_mother_pdgId", "ljet_4_matched_mother_status", "ljet_4_matched_origin", 
-                        "ljet_4_matched_p4_n", "ljet_4_matched_pdgId", "ljet_4_matched_pz", "ljet_4_matched_q", "ljet_4_matched_status", "ljet_4_matched_type", "ljet_4_origin", "ljet_4_p4_n", "ljet_4_q", 
-                        "ljet_4_type", "ljet_4_width", 
-                        
-                        "met_reco_p4_n", 
-                        
-                        "muTrigMatch_0_HLT_mu20_iloose_L1MU15", "muTrigMatch_0_HLT_mu26_ivarmedium", "muTrigMatch_0_HLT_mu50", "muTrigMatch_0_trigger_matched", 
-                        
-                        "muon_0", "muon_0_NOMINAL_MuEffSF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_QualMedium", "muon_0_NOMINAL_MuEffSF_HLT_mu26_ivarmedium_OR_HLT_mu50_QualMedium", "muon_0_NOMINAL_MuEffSF_IsoFCLoose", 
-                        "muon_0_NOMINAL_MuEffSF_IsoFCLoose_FixedRad", "muon_0_NOMINAL_MuEffSF_IsoFCTight", "muon_0_NOMINAL_MuEffSF_IsoFCTightTrackOnly", "muon_0_NOMINAL_MuEffSF_IsoFCTightTrackOnly_FixedRad", 
-                        "muon_0_NOMINAL_MuEffSF_IsoFCTight_FixedRad", "muon_0_NOMINAL_MuEffSF_IsoFixedCutHighPtTrackOnly", "muon_0_NOMINAL_MuEffSF_Reco_QualMedium", "muon_0_NOMINAL_MuEffSF_TTVA", 
-                        
-                        "muon_0_id_medium", "muon_0_id_tight", "muon_0_iso_FCLoose", "muon_0_iso_FCLoose_FixedRad", "muon_0_iso_FCTight", "muon_0_iso_FCTightTrackOnly_FixedRad", "muon_0_iso_FixedCutLoose", "muon_0_iso_FixedCutTight", 
-                        "muon_0_iso_FixedCutTightCaloOnly", 
-                        
-                        "muon_0_matched_classifierParticleOrigin", "muon_0_matched_classifierParticleType", "muon_0_matched_p4_n", "muon_0_matched_pdgId", "muon_0_matched_pz", 
-                        "muon_0_matched_q", "muon_0_matched_type", "muon_0_p4_n", "muon_0_q", "muon_0_trk_d0_sig", "muon_0_trk_pvx_z0_sig", "muon_0_trk_pvx_z0_sintheta", "muon_0_trk_z0_sintheta", 
-                        
-                        "n_actual_int", 
-                        "n_actual_int_cor", "n_avg_int", "n_avg_int_cor", "n_bjets_MV2c10_FixedCutBEff_85", "n_electrons", "n_electrons_olr", "n_jets", "n_muons", "n_pvx", "n_taus", "n_taus_met", "n_taus_olr", 
-                        "n_taus_rnn_loose", "n_taus_rnn_medium", "n_taus_rnn_tight", "n_taus_rnn_veryloose", "n_vx", 
-                        
-                        "run_number", 
-                        
-                        "tau_0", "tau_0_NOMINAL_TauEffSF_JetRNNloose", "tau_0_NOMINAL_TauEffSF_JetRNNmedium", 
-                        "tau_0_NOMINAL_TauEffSF_JetRNNtight", "tau_0_NOMINAL_TauEffSF_LooseEleBDT_electron", "tau_0_NOMINAL_TauEffSF_MediumEleBDT_electron", "tau_0_NOMINAL_TauEffSF_reco", "tau_0_decay_mode", 
-                        "tau_0_ele_bdt_eff_sf", "tau_0_ele_bdt_loose", "tau_0_ele_bdt_loose_retuned", "tau_0_ele_bdt_medium", "tau_0_ele_bdt_medium_retuned", "tau_0_ele_bdt_score", "tau_0_ele_bdt_score_retuned", 
-                        "tau_0_ele_bdt_score_trans", "tau_0_ele_bdt_score_trans_retuned", "tau_0_ele_bdt_tight", "tau_0_ele_bdt_tight_retuned", "tau_0_ele_match_lhscore", "tau_0_ele_olr_pass", "tau_0_jetFakeFakeFlavour", 
-                        "tau_0_jet_bdt_loose", "tau_0_jet_bdt_medium", "tau_0_jet_bdt_score", "tau_0_jet_bdt_score_trans", "tau_0_jet_bdt_tight", "tau_0_jet_bdt_veryloose", "tau_0_jet_rnn_loose", "tau_0_jet_rnn_medium", 
-                        "tau_0_jet_rnn_score", "tau_0_jet_rnn_score_trans", "tau_0_jet_rnn_tight", "tau_0_n_charged_tracks", "tau_0_p4_n", "tau_0_q", 
-                        
-                        "tau_0_truth", "tau_0_truth_classifierParticleOrigin", 
-                        "tau_0_truth_classifierParticleType", "tau_0_truth_isEle", "tau_0_truth_isHadTau", "tau_0_truth_isJet", "tau_0_truth_isMuon", "tau_0_truth_isTau", "tau_0_truth_isTruthMatch", 
-                        "tau_0_truth_p4_n", "tau_0_truth_pdgId", "tau_0_truth_pz", "tau_0_truth_vis_charged_p4_n", "tau_0_truth_vis_neutral_others_p4_n", "tau_0_truth_vis_neutral_p4_n", "tau_0_truth_vis_neutral_pions_p4_n", 
-                        
-                        "triggerSF_em_NOMINAL", 
-                        
-                        "weight_mc", "weight_mc_v", "weight_total" };
+float getPy(float pt,float phi){
+    return pt * sinf(phi);
+}
 
-    std::vector<std::string> all_branch_name_data = {"HLT_e120_lhloose", "HLT_e140_lhloose_nod0", "HLT_e24_lhmedium_L1EM20VH", "HLT_e26_lhtight_nod0_ivarloose", "HLT_e60_lhmedium", "HLT_e60_lhmedium_nod0", 
-                    "HLT_mu20_iloose_L1MU15", "HLT_mu26_ivarmedium", "HLT_mu50", 
-                    
-                    "bjet_0", "bjet_0_b_tagged_MV2c10_FixedCutBEff_85", "bjet_0_origin", "bjet_0_p4_n", "bjet_0_type", 
-                    
-                    "bjet_1", "bjet_1_b_tagged_MV2c10_FixedCutBEff_85", "bjet_1_origin", "bjet_1_p4_n", "bjet_1_type", 
-                    
-                    "eleTrigMatch_0_HLT_e120_lhloose", "eleTrigMatch_0_HLT_e140_lhloose_nod0", 
-                    "eleTrigMatch_0_HLT_e24_lhmedium_L1EM20VH", "eleTrigMatch_0_HLT_e26_lhtight_nod0_ivarloose", "eleTrigMatch_0_HLT_e60_lhmedium", "eleTrigMatch_0_HLT_e60_lhmedium_nod0", 
-                    "eleTrigMatch_0_trigger_matched", 
-                    
-                    "elec_0", "elec_0_cluster_eta", "elec_0_cluster_eta_be2", "elec_0_id_medium", "elec_0_id_tight", "elec_0_iso_FCLoose", 
-                    "elec_0_iso_FCLoose_FixedRad", "elec_0_iso_FCTight", "elec_0_iso_FCTightTrackOnly_FixedRad", "elec_0_iso_FixedCutLoose", "elec_0_iso_FixedCutTight", 
-                    "elec_0_iso_FixedCutTightCaloOnly", "elec_0_p4_n", "elec_0_q", "elec_0_trk_d0_sig", "elec_0_trk_pvx_z0_sintheta", "elec_0_trk_z0_sintheta", 
-                    
-                    "event_is_bad_batman", "event_number", "lb_number", 
-                    
-                    "ljet_0", "ljet_0_b_tagged_MV2c10_FixedCutBEff_85", "ljet_0_flavorlabel", "ljet_0_flavorlabel_cone", "ljet_0_flavorlabel_part", "ljet_0_origin", "ljet_0_p4_n", "ljet_0_type", 
-                    
-                    "ljet_1", "ljet_1_b_tagged_MV2c10_FixedCutBEff_85", "ljet_1_flavorlabel", "ljet_1_flavorlabel_cone", "ljet_1_flavorlabel_part", "ljet_1_origin", "ljet_1_p4_n", "ljet_1_type", 
-                    
-                    "ljet_2", "ljet_2_b_tag_quantile", "ljet_2_b_tag_score", "ljet_2_b_tagged_MV2c10_FixedCutBEff_85", "ljet_2_cleanJet_EC_LooseBad", "ljet_2_fjvt", 
-                    "ljet_2_flavorlabel", "ljet_2_flavorlabel_cone", "ljet_2_flavorlabel_part", "ljet_2_is_Jvt_HS", "ljet_2_jvt", "ljet_2_origin", "ljet_2_p4_n", "ljet_2_q", "ljet_2_type", 
-                    "ljet_2_width", 
-                    
-                    "ljet_3", "ljet_3_b_tag_quantile", "ljet_3_b_tag_score", "ljet_3_b_tagged_MV2c10_FixedCutBEff_85", "ljet_3_cleanJet_EC_LooseBad", "ljet_3_fjvt", 
-                    "ljet_3_flavorlabel", "ljet_3_flavorlabel_cone", "ljet_3_flavorlabel_part", "ljet_3_is_Jvt_HS", "ljet_3_jvt", "ljet_3_origin", "ljet_3_p4_n", "ljet_3_q", "ljet_3_type", 
-                    "ljet_3_width", 
-                    
-                    "ljet_4", "ljet_4_b_tag_quantile", "ljet_4_b_tag_score", "ljet_4_b_tagged_MV2c10_FixedCutBEff_85", "ljet_4_cleanJet_EC_LooseBad", "ljet_4_fjvt", 
-                    "ljet_4_flavorlabel", "ljet_4_flavorlabel_cone", "ljet_4_flavorlabel_part", "ljet_4_is_Jvt_HS", "ljet_4_jvt", "ljet_4_origin", "ljet_4_p4_n", "ljet_4_q", "ljet_4_type", 
-                    "ljet_4_width", 
-                    
-                    "met_reco_p4_n", 
-                    
-                    "muTrigMatch_0_HLT_mu20_iloose_L1MU15", "muTrigMatch_0_HLT_mu26_ivarmedium", "muTrigMatch_0_HLT_mu50", "muTrigMatch_0_trigger_matched", 
+float getPz(float pt,float eta){
+    return pt * sinhf(eta);
+}
 
-                    "muon_0", "muon_0_id_medium", "muon_0_id_tight", "muon_0_iso_FCLoose", "muon_0_iso_FCLoose_FixedRad", "muon_0_iso_FCTight", "muon_0_iso_FCTightTrackOnly_FixedRad", 
-                    "muon_0_iso_FixedCutLoose", "muon_0_iso_FixedCutTight", "muon_0_iso_FixedCutTightCaloOnly", "muon_0_p4_n", "muon_0_q", "muon_0_trk_d0_sig", "muon_0_trk_pvx_z0_sig", 
-                    "muon_0_trk_pvx_z0_sintheta", "muon_0_trk_z0_sintheta", 
-                    
-                    "n_actual_int", "n_actual_int_cor", "n_avg_int", "n_avg_int_cor", "n_bjets_MV2c10_FixedCutBEff_85", 
-                    "n_electrons", "n_electrons_olr", "n_jets", "n_muons", "n_pvx", "n_taus", "n_taus_met", "n_taus_olr", "n_taus_rnn_loose", "n_taus_rnn_medium", "n_taus_rnn_tight", 
-                    "n_taus_rnn_veryloose", "n_vx", 
-                    
-                    "run_number", 
-                    
-                    "tau_0", "tau_0_decay_mode", "tau_0_ele_bdt_eff_sf", "tau_0_ele_bdt_loose", "tau_0_ele_bdt_loose_retuned", "tau_0_ele_bdt_medium", 
-                    "tau_0_ele_bdt_medium_retuned", "tau_0_ele_bdt_score", "tau_0_ele_bdt_score_retuned", "tau_0_ele_bdt_score_trans", "tau_0_ele_bdt_score_trans_retuned", "tau_0_ele_bdt_tight", 
-                    "tau_0_ele_bdt_tight_retuned", "tau_0_ele_match_lhscore", "tau_0_ele_olr_pass", "tau_0_jet_bdt_loose", "tau_0_jet_bdt_medium", "tau_0_jet_bdt_score", "tau_0_jet_bdt_score_trans", 
-                    "tau_0_jet_bdt_tight", "tau_0_jet_bdt_veryloose", "tau_0_jet_rnn_loose", "tau_0_jet_rnn_medium", "tau_0_jet_rnn_score", "tau_0_jet_rnn_score_trans", "tau_0_jet_rnn_tight", 
-                    "tau_0_n_charged_tracks", "tau_0_p4_n", "tau_0_q" };
+float getPScaler(float pt,float eta){
+    return pt * coshf(eta);
+}
 
+float getE(float pt,float eta,float m){
+   float p = getPScaler(pt, eta);
+    return sqrtf(m * m + p * p);
+}
 
+float getMass(float energy,float px,float py,float pz){
 
-    std::vector<std::string> elec_triggers_name = { "eleTrigMatch_0_HLT_e120_lhloose", 
-                                                    "eleTrigMatch_0_HLT_e140_lhloose_nod0", 
-                                                    "eleTrigMatch_0_HLT_e24_lhmedium_L1EM20VH", 
-                                                    "eleTrigMatch_0_HLT_e26_lhtight_nod0_ivarloose", 
-                                                    "eleTrigMatch_0_HLT_e60_lhmedium", 
-                                                    "eleTrigMatch_0_HLT_e60_lhmedium_nod0" };
+    return sqrtf(energy * energy - px * px - py * py - pz * pz);
+}
 
-    std::vector<std::string> muon_triggers_name = { "muTrigMatch_0_HLT_mu20_iloose_L1MU15", 
-                                                    "muTrigMatch_0_HLT_mu26_ivarmedium", 
-                                                    "muTrigMatch_0_HLT_mu50" };
+float getdphi(float v1phi, float v2phi)
+{
+    float ret;
+    if(fabsf(v1phi - v2phi) > CUDART_PI_F)
+        ret = ((float)(v1phi > 0) -  (float)(v1phi <= 0)) * (2 * CUDART_PI_F - fabsf(v1phi - v2phi));
+    else
+        ret = v2phi - v1phi;
+    return ret;
+}
 
-    std::vector<std::string> elec_sf_name       = { "elec_0_NOMINAL_EleEffSF_Isolation_TightLLH_d0z0_v13_FCLoose", 
-                                                    "elec_0_NOMINAL_EleEffSF_Isolation_TightLLH_d0z0_v13_FCTight", 
-                                                    "elec_0_NOMINAL_EleEffSF_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_2018_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_TightLLH_d0z0_v13_isolFCTight", 
-                                                    "elec_0_NOMINAL_EleEffSF_offline_RecoTrk", 
-                                                    "elec_0_NOMINAL_EleEffSF_offline_TightLLH_d0z0_v13", 
-                                                    "elec_0_NOMINAL_efficiency_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_2018_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_TightLLH_d0z0_v13_isolFCTight"};
-    
-    std::vector<std::string> muon_sf_name       = { "muon_0_NOMINAL_MuEffSF_HLT_mu20_iloose_L1MU15_OR_HLT_mu50_QualMedium", 
-                                                    "muon_0_NOMINAL_MuEffSF_HLT_mu26_ivarmedium_OR_HLT_mu50_QualMedium", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFCLoose", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFCLoose_FixedRad", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFCTight", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFCTightTrackOnly", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFCTightTrackOnly_FixedRad", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFCTight_FixedRad", 
-                                                    "muon_0_NOMINAL_MuEffSF_IsoFixedCutHighPtTrackOnly", 
-                                                    "muon_0_NOMINAL_MuEffSF_Reco_QualMedium", 
-                                                    "muon_0_NOMINAL_MuEffSF_TTVA" };
+float getPhiFromPxPy(float px, float py)
+{
+    return  (float)(px>0) * atanf(py / px) + 
+            (float)(px<=0 && py > 0) * (atanf(py / px) + CUDART_PI_F) + 
+            (float)(px<=0 && py <= 0) * (atanf(py / px) - CUDART_PI_F);
+}
 
-    std::vector<std::string> tau_had_sf_name    = { "tau_0_NOMINAL_TauEffSF_JetRNNloose", 
-                                                    "tau_0_NOMINAL_TauEffSF_JetRNNmedium", 
-                                                    "tau_0_NOMINAL_TauEffSF_JetRNNtight", 
-                                                    "tau_0_NOMINAL_TauEffSF_LooseEleBDT_electron", 
-                                                    "tau_0_NOMINAL_TauEffSF_MediumEleBDT_electron", 
-                                                    "tau_0_NOMINAL_TauEffSF_reco" };
-
-    std::vector<std::string> jet_sf_name        = { "jet_NOMINAL_central_jets_global_effSF_JVT", 
-                                                    "jet_NOMINAL_central_jets_global_ineffSF_JVT", 
-                                                    "jet_NOMINAL_forward_jets_global_effSF_JVT", 
-                                                    "jet_NOMINAL_forward_jets_global_ineffSF_JVT", 
-                                                    "jet_NOMINAL_global_effSF_MV2c10_FixedCutBEff_85", 
-                                                    "jet_NOMINAL_global_ineffSF_MV2c10_FixedCutBEff_85" };
-
-    
-    if (df.HasColumn("weight_mc")){
-        auto ef = df
-                    .Define("elec_trigs",   getElecTriggers,    elec_triggers_name)
-                    .Define("muon_trigs",   getMuonTriggers,    muon_triggers_name)
-
-                    .Define("muon_pass",    muonSel,            {"muon_0_p4_n", "muon_0_iso_FCTightTrackOnly_FixedRad", "muon_0_id_tight", "muon_trigs"})
-
-                    .Filter([](bool muon){return muon;}, {"muon_pass"})
-
-                    .Define("muon_sfs",     getMuonSF,          muon_sf_name)
-                    .Define("muon_sf",      getMuonSFNum,       {"muon_sfs"})
-                    ;
-
-
-        all_branch_name_mc.push_back("muon_pass");
-
-        all_branch_name_mc.push_back("muon_sf" );
-
-        
-
-        ef.Snapshot("NOMINAL", outfile, all_branch_name_mc);
-    }
-    else 
+bool cpu(ROOT::Math::PtEtaPhiMVector bjet0, 
+            ROOT::Math::PtEtaPhiMVector bjet1, 
+            ROOT::Math::PtEtaPhiMVector lep0, 
+            ROOT::Math::PtEtaPhiMVector tau_had0, 
+            ROOT::Math::PtEtaPhiMVector met,
+            double chi0, double chi1)
+{
+    bool pass=0;
+    double min_m_tautau_diff_scaled = 1000;
+    ROOT::Math::PtEtaPhiMVector bjet0_scaled;
+    ROOT::Math::PtEtaPhiMVector bjet1_scaled;
+    ROOT::Math::PxPyPzEVector met_scaled;
+    double i = chi0;
+    double j = chi1;
+    bjet0_scaled = bjet0;
+    bjet1_scaled = bjet1;
+    met_scaled   = met;
+    bjet0_scaled.SetPt(i*bjet0.Pt());
+    bjet1_scaled.SetPt(j*bjet1.Pt());
+    //std::cout<<"Pt_ori\t"<<met.Pt()<<"Phi_ori\t"<<met.Phi()<<"\n";
+    met_scaled.SetPx(met.Px() - (bjet0_scaled.Px() - bjet0.Px()) - (bjet1_scaled.Px() - bjet1.Px()));
+    met_scaled.SetPy(met.Py() - (bjet0_scaled.Py() - bjet0.Py()) - (bjet1_scaled.Py() - bjet1.Py()));
+    double met_scaled_px = met_scaled.Px();
+    double met_scaled_py = met_scaled.Py();
+    //std::cout<<"Pt_aft\t"<<met_scaled.Pt()<<"Phi_aft\t"<<met_scaled.Phi()<<"\n\n";
+    double m_bb_scaled = (bjet0_scaled + bjet1_scaled).M();
+    if(std::abs(m_bb_scaled - Z_MASS) < 1.0)
     {
-        auto ef = df
-                    .Define("elec_trigs",   getElecTriggers,    elec_triggers_name)
-                    .Define("muon_trigs",   getMuonTriggers,    muon_triggers_name)
+        double dphi_hl = getdphi(tau_had0.phi(), lep0.phi());
+        double dphi_hv_scaled = getdphi(tau_had0.phi(), met_scaled.phi());
+        double dphi_lv_scaled = getdphi(lep0.phi(),     met_scaled.phi());
+        bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (std::abs(dphi_hl) > std::abs(dphi_hv_scaled));
+        bool close_to_h_scaled = std::abs(dphi_hv_scaled) < 0.17453292;// 10 degree
+        bool close_to_l_scaled = std::abs(dphi_lv_scaled) < 0.17453292;
+        bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
+        if(v_pos_pass_scaled)
+        {
+            ROOT::Math::PtEtaPhiMVector vh_scaled(0,0,0,0);
+            ROOT::Math::PtEtaPhiMVector vl_scaled(0,0,0,0);
+            if (!inside_hl_scaled && close_to_h_scaled) 
+            {
+                vh_scaled = {met_scaled.Pt() * std::cos(std::abs(dphi_hv_scaled)), tau_had0.Eta(), tau_had0.Phi(), 0};
+            }
+            else if (!inside_hl_scaled && close_to_l_scaled)
+            {
+                vl_scaled = {met_scaled.Pt() * std::cos(std::abs(dphi_lv_scaled)), lep0.Eta(), lep0.Phi(), 0};
+            }
+            else if (inside_hl_scaled)
+            {
+                double vhpt_scaled = met_scaled.Pt() * std::cos(std::abs(dphi_hv_scaled)) - met_scaled.Pt() * std::sin(std::abs(dphi_hv_scaled)) * (1/std::tan(std::abs(dphi_hl)));
+                vh_scaled = {vhpt_scaled, tau_had0.Eta(), tau_had0.Phi(), 0};
+                double vlpt_scaled = met_scaled.Pt() * std::sin(std::abs(dphi_hv_scaled)) / std::sin(std::abs(dphi_hl));
+                vl_scaled = {vlpt_scaled, lep0.Eta(), lep0.Phi(), 0};
+            }
+            double m_tautau_scaled = (vh_scaled+vl_scaled+tau_had0+lep0).M();
+            double m_tautau_diff_scaled = std::abs(m_tautau_scaled - Z_MASS);
 
-                    .Define("elec_pass",    elecSel,            {"elec_0_p4_n", "elec_0_iso_FCTight", "elec_0_id_tight", "elec_trigs"})
-                    .Define("muon_pass",    muonSel,            {"muon_0_p4_n", "muon_0_iso_FCTightTrackOnly_FixedRad", "muon_0_id_tight", "muon_trigs"})
-                    .Define("tau_had_pass", tauHadSel,          {"tau_0_p4_n", "tau_0_jet_rnn_tight"})
-                    .Define("bjet_0_pass",  bjetSel,            {"bjet_0_p4_n", "bjet_0_b_tagged_MV2c10_FixedCutBEff_85"})
-                    .Define("bjet_1_pass",  bjetSel,            {"bjet_1_p4_n", "bjet_1_b_tagged_MV2c10_FixedCutBEff_85"})
-
-                    .Filter([](bool elec, bool muon){return elec != muon;}, {"elec_pass", "muon_pass"})
-                    .Filter([](bool bjet_0, bool bjet_1){return bjet_0 && bjet_1;}, {"bjet_0_pass", "bjet_1_pass"})
-                    .Filter([](bool tau_had){return tau_had;}, {"tau_had_pass"})
-                    .Define("lep_0_p4_n",   [](ROOT::Math::PtEtaPhiMVector ele, ROOT::Math::PtEtaPhiMVector mu, bool ele_pass){return ele_pass ? ele : mu;}, {"elec_0_p4_n", "muon_0_p4_n", "elec_pass"})
-                    ;
-
-        all_branch_name_data.push_back("lep_0_p4_n");
-        all_branch_name_mc.push_back("muon_pass");
-        all_branch_name_mc.push_back("elec_pass");
-
-        ef.Snapshot("NOMINAL", outfile, all_branch_name_data);
+            if (m_tautau_diff_scaled < 3)
+            {
+                if(min_m_tautau_diff_scaled > m_tautau_diff_scaled)
+                {
+                    min_m_tautau_diff_scaled = m_tautau_diff_scaled;
+                    pass = 1;
+                }
+            }
+        }
     }
+    return pass;
 }
-#ifdef DEBUG
+    
 
-int main()
+bool gpu(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,    float bjet0_m,
+                            float bjet1_pt, float bjet1_eta,    float bjet1_phi,    float bjet1_m,
+                            float lep0_pt,  float lep0_eta,     float lep0_phi,     float lep0_m,
+                            float tau0_pt,  float tau0_eta,     float tau0_phi,     float tau0_m,
+                            float met_pt,   float met_eta,      float met_phi,      float met_m,
+                            float chi0, float chi1)
 {
-    presel("output/01_convert_out/410470.txt.root","debug.root");
-    //copyMeta("output/convert_out/361104.txt.root","debug.root");
-    return 0;
+    bool pass=0;
+
+    float bjet0_scaled_pt = bjet0_pt * chi0;
+    float bjet1_scaled_pt = bjet1_pt * chi1;
+
+    float met_scaled_px = getPx(met_pt, met_phi) - (getPx(bjet0_scaled_pt, bjet0_phi) - getPx(bjet0_pt, bjet0_phi)) - (getPx(bjet1_scaled_pt, bjet1_phi) - getPx(bjet1_pt, bjet1_phi));
+    float met_scaled_py = getPy(met_pt, met_phi) - (getPy(bjet0_scaled_pt, bjet0_phi) - getPy(bjet0_pt, bjet0_phi)) - (getPy(bjet1_scaled_pt, bjet1_phi) - getPy(bjet1_pt, bjet1_phi));
+    
+    float bjet0_scaled_E = getE(bjet0_scaled_pt, bjet0_eta, bjet0_m);
+    float bjet0_scaled_px = getPx(bjet0_scaled_pt, bjet0_phi);
+    float bjet0_scaled_py = getPy(bjet0_scaled_pt, bjet0_phi);
+    float bjet0_scaled_pz = getPz(bjet0_scaled_pt, bjet0_eta);
+
+    float bjet1_scaled_E =  getE(bjet1_scaled_pt, bjet1_eta, bjet1_m);
+    float bjet1_scaled_px = getPx(bjet1_scaled_pt, bjet1_phi);
+    float bjet1_scaled_py = getPy(bjet1_scaled_pt, bjet1_phi);
+    float bjet1_scaled_pz = getPz(bjet1_scaled_pt, bjet1_eta);
+
+
+    float m_bb_scaled = getMass(bjet0_scaled_E + bjet1_scaled_E, 
+                                bjet0_scaled_px + bjet1_scaled_px,
+                                bjet0_scaled_py + bjet1_scaled_py,
+                                bjet0_scaled_pz + bjet1_scaled_pz);   
+    
+    //printf("chi0:%f\tchi1:%f\tmbb:%f\n",chi0, chi1, m_bb_scaled);
+    if(fabsf(m_bb_scaled - Z_MASS) < 1.0)
+    {
+        //printf("i:%d\tj:%d\tchi0:%f\tchi1:%f\tPASS1\n",i,j,chi0,chi1);
+        float dphi_hl = getdphi(tau0_phi, lep0_phi);
+        float met_scaled_phi = getPhiFromPxPy(met_scaled_px, met_scaled_py);
+        float met_scaled_pt  = sqrtf(met_scaled_py * met_scaled_py + met_scaled_px * met_scaled_px);
+        float dphi_hv_scaled = getdphi(tau0_phi, met_scaled_phi);
+        float dphi_lv_scaled = getdphi(lep0_phi, met_scaled_phi);
+        bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (fabsf(dphi_hl) > fabsf(dphi_hv_scaled));
+        bool close_to_h_scaled = fabsf(dphi_hv_scaled) < 0.17453292f;// 10 degree
+        bool close_to_l_scaled = fabsf(dphi_lv_scaled) < 0.17453292f;
+        bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
+        if(v_pos_pass_scaled)
+        {
+            //printf("i:%d\tj:%d\tchi0:%f\tchi1:%f\tPASS2\n",i,j,chi0,chi1);
+            float vh_scaled_pt =0;
+            float vh_scaled_eta=0;
+            float vh_scaled_phi=0;
+            float vh_scaled_m  =0;
+
+            float vl_scaled_pt =0;
+            float vl_scaled_eta=0;
+            float vl_scaled_phi=0;
+            float vl_scaled_m  =0;
+            if (!inside_hl_scaled && close_to_h_scaled) 
+            {
+                vh_scaled_pt  = met_scaled_pt * cosf(fabsf(dphi_hv_scaled));
+                vh_scaled_eta = tau0_eta;
+                vh_scaled_phi = tau0_phi; 
+                vh_scaled_m   = 0;
+            }
+            else if (!inside_hl_scaled && close_to_l_scaled)
+            {
+                vl_scaled_pt = met_scaled_pt * cosf(fabsf(dphi_lv_scaled));
+                vl_scaled_eta = lep0_eta;
+                vl_scaled_phi = lep0_phi;
+                vl_scaled_m   =  0;
+            }
+            else if (inside_hl_scaled)
+            {
+                vh_scaled_pt    = met_scaled_pt * cosf(fabsf(dphi_hv_scaled)) - met_scaled_pt * sinf(fabsf(dphi_hv_scaled)) * (1/tanf(fabsf(dphi_hl)));
+                vh_scaled_eta   = tau0_eta;
+                vh_scaled_phi   = tau0_phi; 
+                vh_scaled_m     = 0;
+                vl_scaled_pt    = met_scaled_pt * sinf(fabsf(dphi_hv_scaled)) / sinf(fabsf(dphi_hl));
+                vl_scaled_eta   = lep0_eta;
+                vl_scaled_phi   = lep0_phi;
+                vl_scaled_m     = 0;
+            }
+            float  tautau_px = (getPx(vh_scaled_pt, vh_scaled_phi)+getPx(vl_scaled_pt, vl_scaled_phi)+getPx(tau0_pt, tau0_phi)+getPx(lep0_pt, lep0_phi));
+            float  tautau_py = (getPy(vh_scaled_pt, vh_scaled_phi)+getPy(vl_scaled_pt, vl_scaled_phi)+getPy(tau0_pt, tau0_phi)+getPy(lep0_pt, lep0_phi));
+            float  tautau_pz = (getPz(vh_scaled_pt, vh_scaled_eta)+getPz(vl_scaled_pt, vl_scaled_eta)+getPz(tau0_pt, tau0_eta)+getPz(lep0_pt, lep0_eta));
+            float  tautau_e  = (getE(vh_scaled_pt, vh_scaled_eta, vh_scaled_m)+getE(vl_scaled_pt, vl_scaled_eta, vl_scaled_m)+getE(tau0_pt, tau0_eta, tau0_m)+getE(lep0_pt, lep0_eta, lep0_m));
+            float  m_tautau_scaled = getMass(tautau_e, tautau_px, tautau_py, tautau_pz);
+            float m_tautau_diff_scaled = fabsf(m_tautau_scaled - Z_MASS);
+
+            if (m_tautau_diff_scaled < 3)
+            {
+                pass = 1;
+            }
+        }
+    }
+    return pass;
 }
 
-#else
-
-int main(int argc, char** argv)
-{
-    presel(argv[1], argv[2]);
-    return 0;
+int main(){
+    ROOT::RDataFrame df("NOMINAL", "debug.root");
+    auto ef = df.Filter("cpu_pass");
+    auto bjet0 = (ef.Take<ROOT::Math::PtEtaPhiMVector>("bjet_0_p4_n").GetValue())[0];
+    auto bjet1 = (ef.Take<ROOT::Math::PtEtaPhiMVector>("bjet_1_p4_n").GetValue())[0];
+    auto lep0 =  (ef.Take<ROOT::Math::PtEtaPhiMVector>("lep_0_p4_n").GetValue())[0];
+    auto tau0 =  (ef.Take<ROOT::Math::PtEtaPhiMVector>("tau_0_p4_n").GetValue())[0];
+    auto met =   (ef.Take<ROOT::Math::PtEtaPhiMVector>("met_reco_p4_n").GetValue())[0];
+    double chi0 = (ef.Take<double>("bjet_0_pt_scale_fac").GetValue())[0];
+    double chi1 = (ef.Take<double>("bjet_1_pt_scale_fac").GetValue())[0];
+    bool cpu_res = cpu(bjet0, bjet1, lep0, tau0, met, chi0, chi1);
+    bool gpu_res = gpu(bjet0.Pt(), bjet0.Eta(), bjet0.Phi(), bjet0.M(),
+                    bjet1.Pt(), bjet1.Eta(), bjet1.Phi(), bjet1.M(),
+                    lep0.Pt(), lep0.Eta(), lep0.Phi(), lep0.M(),
+                    tau0.Pt(), tau0.Eta(), tau0.Phi(), tau0.M(),
+                    met.Pt(), met.Eta(), met.Phi(), met.M(),
+                    chi0, chi1);
 }
-
-#endif

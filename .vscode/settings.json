@@ -63,6 +63,9 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "allocator": "cpp"
+        "allocator": "cpp",
+        "valarray": "cpp",
+        "*.cuh": "cpp",
+        "*.cu": "cpp"
     }
 }

@@ -1,4 +1,5 @@
 #include "genAna.h"
+#include "GPUScaleB.cuh"
 
 struct weight_rela
 {
@@ -148,7 +149,7 @@ ROOT::Math::PtEtaPhiMVector getVLP4(uint v_pos_uint, ROOT::Math::PtEtaPhiMVector
     double dphi_hv = getdphi(tau_had.phi(), met.phi());
     if (v_pos == OUTSIDE_HL_CLOSE_TO_L) 
     {
-        vl = {met.Pt() * std::cos(std::abs(dphi_lv)), lep.Eta(), tau_had.Phi(), 0};
+        vl = {met.Pt() * std::cos(std::abs(dphi_lv)), lep.Eta(), lep.Phi(), 0};
     }
     else if (v_pos == INSIDE_HL_CLOSE_TO_H || v_pos == INSIDE_HL_CLOSE_TO_L)
     {
@@ -237,4 +238,119 @@ double getTop1DeltaRBTau(uint top_cons_uint, ROOT::Math::PtEtaPhiMVector lep, RO
         ret = getDeltaR(lep, bjet1);
     return ret;
 }
+
+struct event{
+    //4-vec
+    ROOT::Math::PtEtaPhiMVector bjet0;
+    ROOT::Math::PtEtaPhiMVector bjet1;
+    ROOT::Math::PtEtaPhiMVector lep0;
+    ROOT::Math::PtEtaPhiMVector tau_had0;
+    ROOT::Math::PtEtaPhiMVector met;
+
+    double bjet0_pt_scale_fac;
+    double bjet1_pt_scale_fac;
+
+    bool veto;
+};
+
+
+
+struct event getEvent(ROOT::Math::PtEtaPhiMVector bjet0, ROOT::Math::PtEtaPhiMVector bjet1, ROOT::Math::PtEtaPhiMVector lep0, ROOT::Math::PtEtaPhiMVector tau_had0, ROOT::Math::PtEtaPhiMVector met)
+{
+
+    event evt;
+    evt.bjet0 = bjet0;
+    evt.bjet1 = bjet1;
+    evt.lep0  = lep0;
+    evt.met   = met;
+    evt.tau_had0 = tau_had0;
+    evt.veto = 1;
+    
+    std::vector<double> gpu_pass_sfs = GPUScaleB(  bjet0.Pt(), bjet0.Eta(), bjet0.Phi(), bjet0.M(),
+                                                    bjet1.Pt(), bjet1.Eta(), bjet1.Phi(), bjet1.M(),
+                                                    lep0.Pt(), lep0.Eta(), lep0.Phi(), lep0.M(),
+                                                    tau_had0.Pt(), tau_had0.Eta(), tau_had0.Phi(), tau_had0.M(),
+                                                    met.Pt(), met.Eta(), met.Phi(), met.M());
+    if(gpu_pass_sfs.size() > 0)
+    {
+        evt.veto=0;
+        evt.bjet0_pt_scale_fac = gpu_pass_sfs[0];
+        evt.bjet1_pt_scale_fac = gpu_pass_sfs[1];
+    }
+    
+    //CPU INPLIMENTATION
+    // double min_m_tautau_diff_scaled = 1000;
+    // ROOT::Math::PtEtaPhiMVector bjet0_scaled;
+    // ROOT::Math::PtEtaPhiMVector bjet1_scaled;
+    // ROOT::Math::PxPyPzEVector met_scaled;
+    // for (double i = 0.5; i < 2.0; i += 0.01)
+    // {
+    //     for (double j = 0.5; j < 2.0; j+=0.01)
+    //     {
+    //         bjet0_scaled = bjet0;
+    //         bjet1_scaled = bjet1;
+    //         met_scaled   = met;
+    //         bjet0_scaled.SetPt(i*bjet0.Pt());
+    //         bjet1_scaled.SetPt(j*bjet1.Pt());
+    //         //std::cout<<"Pt_ori\t"<<met.Pt()<<"Phi_ori\t"<<met.Phi()<<"\n";
+    //         met_scaled.SetPx(met.Px() - (bjet0_scaled.Px() - bjet0.Px()) - (bjet1_scaled.Px() - bjet1.Px()));
+    //         met_scaled.SetPy(met.Py() - (bjet0_scaled.Py() - bjet0.Py()) - (bjet1_scaled.Py() - bjet1.Py()));
+    //         //std::cout<<"Pt_aft\t"<<met_scaled.Pt()<<"Phi_aft\t"<<met_scaled.Phi()<<"\n\n";
+    //         double m_bb_scaled = (bjet0_scaled + bjet1_scaled).M();
+    //         if(std::abs(m_bb_scaled - Z_MASS) < 1.0)
+    //         {
+    //             double dphi_hl = getdphi(tau_had0.phi(), lep0.phi());
+    //             double dphi_hv_scaled = getdphi(tau_had0.phi(), met_scaled.phi());
+    //             double dphi_lv_scaled = getdphi(lep0.phi(),     met_scaled.phi());
+    //             bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (std::abs(dphi_hl) > std::abs(dphi_hv_scaled));
+    //             bool close_to_h_scaled = std::abs(dphi_hv_scaled) < 0.17453292;// 10 degree
+    //             bool close_to_l_scaled = std::abs(dphi_lv_scaled) < 0.17453292;
+    //             bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
+    //             if(v_pos_pass_scaled)
+    //             {
+    //                 ROOT::Math::PtEtaPhiMVector vh_scaled(0,0,0,0);
+    //                 ROOT::Math::PtEtaPhiMVector vl_scaled(0,0,0,0);
+    //                 if (!inside_hl_scaled && close_to_h_scaled) 
+    //                 {
+    //                     vh_scaled = {met_scaled.Pt() * std::cos(std::abs(dphi_hv_scaled)), tau_had0.Eta(), tau_had0.Phi(), 0};
+    //                 }
+    //                 else if (!inside_hl_scaled && close_to_l_scaled)
+    //                 {
+    //                     vl_scaled = {met_scaled.Pt() * std::cos(std::abs(dphi_lv_scaled)), lep0.Eta(), lep0.Phi(), 0};
+    //                 }
+    //                 else if (inside_hl_scaled)
+    //                 {
+    //                     double vhpt_scaled = met_scaled.Pt() * std::cos(std::abs(dphi_hv_scaled)) - met_scaled.Pt() * std::sin(std::abs(dphi_hv_scaled)) * (1/std::tan(std::abs(dphi_hl)));
+    //                     vh_scaled = {vhpt_scaled, tau_had0.Eta(), tau_had0.Phi(), 0};
+    //                     double vlpt_scaled = met_scaled.Pt() * std::sin(std::abs(dphi_hv_scaled)) / std::sin(std::abs(dphi_hl));
+    //                     vl_scaled = {vlpt_scaled, lep0.Eta(), lep0.Phi(), 0};
+    //                 }
+    //                 double m_tautau_scaled = (vh_scaled+vl_scaled+tau_had0+lep0).M();
+    //                 double m_tautau_diff_scaled = std::abs(m_tautau_scaled - Z_MASS);
+
+    //                 if (m_tautau_diff_scaled < 3)
+    //                 {
+    //                     if(min_m_tautau_diff_scaled > m_tautau_diff_scaled)
+    //                     {
+    //                         min_m_tautau_diff_scaled = m_tautau_diff_scaled;
+    //                         evt.bjet0_pt_scale_fac = i;
+    //                         evt.bjet1_pt_scale_fac = j;
+    //                         evt.bjet0_scaled = bjet0_scaled;
+    //                         evt.bjet1_scaled = bjet1_scaled;
+    //                         evt.met_scaled   = met_scaled;
+    //                         evt.vh_scaled    = vh_scaled;
+    //                         evt.vl_scaled    = vl_scaled;
+    //                         evt.m_bb_scaled  = m_bb_scaled;
+    //                         evt.m_tt_scaled  = m_tautau_scaled;
+    //                         evt.veto = false;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    return evt;
+}
+
+
 
