@@ -41,8 +41,8 @@ void draw(const char *in_file, const char *out_histo)
         h_sf.GetYaxis()->SetTitle("log_{2}(#chi_{1})");
         h_sf.SetStats(0);
         h_sf.Draw("COLZ");
-        h_sf.Draw("TEXT SAME");
-    c1.SaveAs("debug.png");
+        //h_sf.Draw("TEXT SAME");
+    c1.SaveAs("debugtt.png");
 
     h_sf.Write();
 
@@ -61,8 +61,8 @@ int main(int argc, char **argv)
 #else
 int main()
 {
-    const char *in_file = "output/03_sel_out/363356.txt.root";
-    //const char *in_file = "output/03_sel_out/410470.txt.root";
+    //const char *in_file = "output/03_sel_out/363356.txt.root";
+    const char *in_file = "output/03_sel_out/410470.txt.root";
     const char *out_histo = "debug.root";
     draw(in_file, out_histo);
 }
