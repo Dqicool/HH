@@ -250,6 +250,12 @@ struct event{
     double bjet0_pt_scale_fac;
     double bjet1_pt_scale_fac;
 
+    double score;
+    double score_m_bb;
+    double score_m_tt;
+    double score_met;
+    double score_chi;
+
     bool veto;
 };
 
@@ -276,6 +282,13 @@ struct event getEvent(ROOT::Math::PtEtaPhiMVector bjet0, ROOT::Math::PtEtaPhiMVe
         evt.veto=0;
         evt.bjet0_pt_scale_fac = gpu_pass_sfs[0];
         evt.bjet1_pt_scale_fac = gpu_pass_sfs[1];
+        
+        evt.score              = gpu_pass_sfs[2];
+
+        evt.score_m_bb         = gpu_pass_sfs[3];
+        evt.score_m_tt         = gpu_pass_sfs[4];
+        evt.score_met          = gpu_pass_sfs[5];
+        evt.score_chi          = gpu_pass_sfs[6];
     }
     
     //CPU INPLIMENTATION

@@ -6,6 +6,13 @@
 #include "GPUScaleB.cuh"
 #define Z_MASS 91.1876
 
+#define M_BB_SC     62.5
+#define M_TT_SC     62.5
+#define MET_SC_1    0.08
+#define MET_SC_2    0.005
+#define MET_SC_3    0.00125
+#define CHI_SC      0.1
+
 __device__ float getPx(float pt, float phi){
     return pt * cosf(phi);
 }
@@ -49,20 +56,47 @@ __device__ float getPhiFromPxPy(float px, float py)
             (float)(px<=0 && py <= 0) * (atanf(py / px) - CUDART_PI_F);
 }
 
+__device__ float getPsiMbb(float m_bb, float m_baseline, float scale_const_bb)
+{
+    return (m_bb - m_baseline) * (m_bb - m_baseline) / scale_const_bb;
+}
+
+__device__ float getPsiMtt(float m_tt, float m_baseline, float scale_const_tt)
+{
+    return (m_tt - m_baseline) * (m_tt - m_baseline) / scale_const_tt;
+}
+
+__device__ float getPsiMET(float vl_pt, float vh_pt, float tau_pt, float lep_pt, float omega,float sc_1, float sc_2, float sc_3)
+{
+    float f_tau_l = vl_pt / (vl_pt + lep_pt);
+    float f_tau_h = vh_pt / (vh_pt + tau_pt);
+    float A_1 = 0.5 * ((f_tau_l - f_tau_h) / (f_tau_l + f_tau_h) + 1);
+    return (float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1 + 
+           (float)(A_1 > 0.8 && A_1 <= 1) * 0 + 
+           (float)(A_1 > 1)               * (omega - 1) * (omega - 1) / sc_2 + 
+           (float)(A_1 < 0)               * (8 + omega * omega / sc_3);
+}
+
+__device__ float getPsiChi(float chi0, float chi1, float sc_chi)
+{
+    float log2_chi0 = log2f(chi0);
+    float log2_chi1 = log2f(chi1);
+    float r2 = log2_chi0 * log2_chi0 + log2_chi1 * log2_chi1;
+    return r2 / sc_chi;
+}
+
 __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,    float bjet0_m,
                             float bjet1_pt, float bjet1_eta,    float bjet1_phi,    float bjet1_m,
                             float lep0_pt,  float lep0_eta,     float lep0_phi,     float lep0_m,
                             float tau0_pt,  float tau0_eta,     float tau0_phi,     float tau0_m,
                             float met_pt,   float met_eta,      float met_phi,      float met_m,
-                            bool * pass, float* m_tt, int N)
+                            bool * pass, float* score, float* score1, float* score2, float* score3, float* score4, int N)
 {
     int i = (threadIdx.x + blockIdx.x * blockDim.x);
-    
     int j = (threadIdx.y + blockIdx.y * blockDim.y);
     float chi0 = 0.5 + 0.01 * i;
-    
     float chi1 = 0.5 + 0.01 * j;
-
+    //mbb calculation
     float bjet0_scaled_pt = bjet0_pt * chi0;
     float bjet1_scaled_pt = bjet1_pt * chi1;
 
@@ -85,70 +119,75 @@ __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,
                                 bjet0_scaled_py + bjet1_scaled_py,
                                 bjet0_scaled_pz + bjet1_scaled_pz);   
     
-    //printf("chi0:%f\tchi1:%f\tmbb:%f\n",chi0, chi1, m_bb_scaled);
-    if(fabsf(m_bb_scaled - Z_MASS) < 1.0)
+    //omega and other
+    float dphi_hl = getdphi(tau0_phi, lep0_phi);
+    float met_scaled_phi = getPhiFromPxPy(met_scaled_px, met_scaled_py);
+    float met_scaled_pt  = sqrtf(met_scaled_py * met_scaled_py + met_scaled_px * met_scaled_px);
+    float dphi_hv_scaled = getdphi(tau0_phi, met_scaled_phi);
+    float dphi_lv_scaled = getdphi(lep0_phi, met_scaled_phi);
+    bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (fabsf(dphi_hl) > fabsf(dphi_hv_scaled));
+    bool close_to_h_scaled = fabsf(dphi_hv_scaled) < CUDART_PIO4_F;// 10 degree
+    bool close_to_l_scaled = fabsf(dphi_lv_scaled) < CUDART_PIO4_F;
+    bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
+    float omega = dphi_hv_scaled / dphi_hl;
+
+    //p4 of vl vh
+    float vh_scaled_pt =0;
+    float vh_scaled_eta=0;
+    float vh_scaled_phi=0;
+    float vh_scaled_m  =0;
+
+    float vl_scaled_pt =0;
+    float vl_scaled_eta=0;
+    float vl_scaled_phi=0;
+    float vl_scaled_m  =0;
+
+    float  m_tautau_scaled = -999;
+    if(v_pos_pass_scaled)
     {
-        //printf("i:%d\tj:%d\tchi0:%f\tchi1:%f\tPASS1\n",i,j,chi0,chi1);
-        float dphi_hl = getdphi(tau0_phi, lep0_phi);
-        float met_scaled_phi = getPhiFromPxPy(met_scaled_px, met_scaled_py);
-        float met_scaled_pt  = sqrtf(met_scaled_py * met_scaled_py + met_scaled_px * met_scaled_px);
-        float dphi_hv_scaled = getdphi(tau0_phi, met_scaled_phi);
-        float dphi_lv_scaled = getdphi(lep0_phi, met_scaled_phi);
-        bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (fabsf(dphi_hl) > fabsf(dphi_hv_scaled));
-        bool close_to_h_scaled = fabsf(dphi_hv_scaled) < 0.17453292f;// 10 degree
-        bool close_to_l_scaled = fabsf(dphi_lv_scaled) < 0.17453292f;
-        bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
-        if(v_pos_pass_scaled)
+        if (!inside_hl_scaled && close_to_h_scaled) 
         {
-            //printf("i:%d\tj:%d\tchi0:%f\tchi1:%f\tPASS2\n",i,j,chi0,chi1);
-            float vh_scaled_pt =0;
-            float vh_scaled_eta=0;
-            float vh_scaled_phi=0;
-            float vh_scaled_m  =0;
-
-            float vl_scaled_pt =0;
-            float vl_scaled_eta=0;
-            float vl_scaled_phi=0;
-            float vl_scaled_m  =0;
-            if (!inside_hl_scaled && close_to_h_scaled) 
-            {
-                vh_scaled_pt  = met_scaled_pt * cosf(fabsf(dphi_hv_scaled));
-                vh_scaled_eta = tau0_eta;
-                vh_scaled_phi = tau0_phi; 
-                vh_scaled_m   = 0;
-            }
-            else if (!inside_hl_scaled && close_to_l_scaled)
-            {
-                vl_scaled_pt = met_scaled_pt * cosf(fabsf(dphi_lv_scaled));
-                vl_scaled_eta = lep0_eta;
-                vl_scaled_phi = lep0_phi;
-                vl_scaled_m   =  0;
-            }
-            else if (inside_hl_scaled)
-            {
-                vh_scaled_pt    = met_scaled_pt * cosf(fabsf(dphi_hv_scaled)) - met_scaled_pt * sinf(fabsf(dphi_hv_scaled)) * (1/tanf(fabsf(dphi_hl)));
-                vh_scaled_eta   = tau0_eta;
-                vh_scaled_phi   = tau0_phi; 
-                vh_scaled_m     = 0;
-                vl_scaled_pt    = met_scaled_pt * sinf(fabsf(dphi_hv_scaled)) / sinf(fabsf(dphi_hl));
-                vl_scaled_eta   = lep0_eta;
-                vl_scaled_phi   = lep0_phi;
-                vl_scaled_m     = 0;
-            }
-            float  tautau_px = (getPx(vh_scaled_pt, vh_scaled_phi)+getPx(vl_scaled_pt, vl_scaled_phi)+getPx(tau0_pt, tau0_phi)+getPx(lep0_pt, lep0_phi));
-            float  tautau_py = (getPy(vh_scaled_pt, vh_scaled_phi)+getPy(vl_scaled_pt, vl_scaled_phi)+getPy(tau0_pt, tau0_phi)+getPy(lep0_pt, lep0_phi));
-            float  tautau_pz = (getPz(vh_scaled_pt, vh_scaled_eta)+getPz(vl_scaled_pt, vl_scaled_eta)+getPz(tau0_pt, tau0_eta)+getPz(lep0_pt, lep0_eta));
-            float  tautau_e  = (getE(vh_scaled_pt, vh_scaled_eta, vh_scaled_m)+getE(vl_scaled_pt, vl_scaled_eta, vl_scaled_m)+getE(tau0_pt, tau0_eta, tau0_m)+getE(lep0_pt, lep0_eta, lep0_m));
-            float  m_tautau_scaled = getMass(tautau_e, tautau_px, tautau_py, tautau_pz);
-            float m_tautau_diff_scaled = fabsf(m_tautau_scaled - Z_MASS);
-
-            if (m_tautau_diff_scaled < 3.0)
-            {
-                //printf("i:%d\tj:%d\tchi0:%f\tchi1:%f\tPASS3\n",i,j,chi0,chi1);
-                pass[i*N + j] = 1;
-                m_tt[i*N + j] = m_tautau_diff_scaled;
-            }
+            vh_scaled_pt  = met_scaled_pt * cosf(fabsf(dphi_hv_scaled));
+            vh_scaled_eta = tau0_eta;
+            vh_scaled_phi = tau0_phi; 
+            vh_scaled_m   = 0;
         }
+        else if (!inside_hl_scaled && close_to_l_scaled)
+        {
+            vl_scaled_pt = met_scaled_pt * cosf(fabsf(dphi_lv_scaled));
+            vl_scaled_eta = lep0_eta;
+            vl_scaled_phi = lep0_phi;
+            vl_scaled_m   =  0;
+        }
+        else if (inside_hl_scaled)
+        {
+            vh_scaled_pt    = met_scaled_pt * cosf(fabsf(dphi_hv_scaled)) - met_scaled_pt * sinf(fabsf(dphi_hv_scaled)) * (1/tanf(fabsf(dphi_hl)));
+            vh_scaled_eta   = tau0_eta;
+            vh_scaled_phi   = tau0_phi; 
+            vh_scaled_m     = 0;
+            vl_scaled_pt    = met_scaled_pt * sinf(fabsf(dphi_hv_scaled)) / sinf(fabsf(dphi_hl));
+            vl_scaled_eta   = lep0_eta;
+            vl_scaled_phi   = lep0_phi;
+            vl_scaled_m     = 0;
+        }
+        float  tautau_px = (getPx(vh_scaled_pt, vh_scaled_phi)+getPx(vl_scaled_pt, vl_scaled_phi)+getPx(tau0_pt, tau0_phi)+getPx(lep0_pt, lep0_phi));
+        float  tautau_py = (getPy(vh_scaled_pt, vh_scaled_phi)+getPy(vl_scaled_pt, vl_scaled_phi)+getPy(tau0_pt, tau0_phi)+getPy(lep0_pt, lep0_phi));
+        float  tautau_pz = (getPz(vh_scaled_pt, vh_scaled_eta)+getPz(vl_scaled_pt, vl_scaled_eta)+getPz(tau0_pt, tau0_eta)+getPz(lep0_pt, lep0_eta));
+        float  tautau_e  = (getE(vh_scaled_pt, vh_scaled_eta, vh_scaled_m)+getE(vl_scaled_pt, vl_scaled_eta, vl_scaled_m)+getE(tau0_pt, tau0_eta, tau0_m)+getE(lep0_pt, lep0_eta, lep0_m));
+        m_tautau_scaled = getMass(tautau_e, tautau_px, tautau_py, tautau_pz);
+    }
+    if(m_tautau_scaled > 0)
+    {
+        pass[i*N + j] = 1;
+        float score_m_bb = getPsiMbb(m_bb_scaled, Z_MASS, M_BB_SC);
+        float score_m_tt = getPsiMtt(m_tautau_scaled, Z_MASS, M_TT_SC);
+        float score_met  = getPsiMET(vl_scaled_pt, vh_scaled_pt, tau0_pt, lep0_pt, omega, MET_SC_1, MET_SC_2, MET_SC_3);
+        float score_chi  = getPsiChi(chi0, chi1, CHI_SC);
+        score1[i*N + j]  = score_m_bb;
+        score2[i*N + j]  = score_m_tt;
+        score3[i*N + j]  = score_met;
+        score4[i*N + j]  = score_chi;
+        score[i*N + j] = sqrtf(score_chi * score_chi + score_m_bb * score_m_bb + score_m_tt * score_m_tt + score_met * score_met);
     }
 }
 
@@ -160,24 +199,31 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     int N = 151;
     size_t size_bool  = N * N * sizeof(bool);
     size_t size_float = N * N * sizeof(float);
-    bool *pass;
-    pass = (bool*)malloc(size_bool);
-    float *m_tt;
-    m_tt = (float*)malloc(size_float);
-
+    //allocate arrays on CPU
+    bool pass[N*N]{ 0 };
+    
+    float score[N*N] { -999 };
+    float score1[N*N] { -999 };
+    float score2[N*N] { -999 };
+    float score3[N*N] { -999 };
+    float score4[N*N] { -999 };
+    //allocate arrays on GPU
     bool *pass_dev;
     cudaMalloc((void**)&pass_dev, size_bool);
 
-    float *m_tt_dev;
-    cudaMalloc((void**)&m_tt_dev, size_float);
-
-    for(int i =0; i < N*N; i++)
-    {
-        pass[i]=0;
-        m_tt[i]=0;
-    }
+    float *score_dev, *score1_dev, *score2_dev, *score3_dev, *score4_dev; 
+    cudaMalloc((void**)&score_dev, size_float);
+    cudaMalloc((void**)&score1_dev, size_float);
+    cudaMalloc((void**)&score2_dev, size_float);
+    cudaMalloc((void**)&score3_dev, size_float);
+    cudaMalloc((void**)&score4_dev, size_float);
+    //copy stuff to GPU
     cudaMemcpy(pass_dev,pass,size_bool,cudaMemcpyHostToDevice);
-    cudaMemcpy(m_tt_dev,m_tt,size_float,cudaMemcpyHostToDevice);
+    cudaMemcpy(score_dev,score,size_float,cudaMemcpyHostToDevice);
+    cudaMemcpy(score1_dev,score1,size_float,cudaMemcpyHostToDevice);
+    cudaMemcpy(score2_dev,score2,size_float,cudaMemcpyHostToDevice);
+    cudaMemcpy(score3_dev,score3,size_float,cudaMemcpyHostToDevice);
+    cudaMemcpy(score4_dev,score4,size_float,cudaMemcpyHostToDevice);
 
     dim3 grid(N, N);
     mykernel<<<grid, 1>>>(  bjet0_pt,  bjet0_eta,     bjet0_phi,     bjet0_m,
@@ -185,22 +231,41 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
                             lep0_pt,   lep0_eta,      lep0_phi,      lep0_m,
                             tau0_pt,   tau0_eta,      tau0_phi,      tau0_m,
                             met_pt,    met_eta,       met_phi,       met_m,
-                            pass_dev, m_tt_dev, N);
+                            pass_dev, score_dev, score1_dev, score2_dev, score3_dev, score4_dev, N);
     //cudaDeviceSynchronize();
     cudaMemcpy(pass,pass_dev,size_bool,cudaMemcpyDeviceToHost);
-    cudaMemcpy(m_tt,m_tt_dev,size_float,cudaMemcpyDeviceToHost);
+    cudaMemcpy(score,score_dev,size_float,cudaMemcpyDeviceToHost);
+    cudaMemcpy(score1,score1_dev,size_float,cudaMemcpyDeviceToHost);
+    cudaMemcpy(score2,score2_dev,size_float,cudaMemcpyDeviceToHost);
+    cudaMemcpy(score3,score3_dev,size_float,cudaMemcpyDeviceToHost);
+    cudaMemcpy(score4,score4_dev,size_float,cudaMemcpyDeviceToHost);
     cudaFree(pass_dev);
-    cudaFree(m_tt_dev);
-    double min_mtt_diff = 100000;
+    cudaFree(score_dev);
+    cudaFree(score1_dev);
+    cudaFree(score2_dev);
+    cudaFree(score3_dev);
+    cudaFree(score4_dev);
+
     std::vector<double> ret;
     double sf1 = -999;
     double sf2 = -999;
+    double min_score = 200;
+    double s1 = 100;
+    double s2 = 100;
+    double s3 = 100;
+    double s4 = 100;
     for(int i =0; i < N * N; i++){
         if (pass[i])
         {
-            if(m_tt[i] < min_mtt_diff)
+            if(score[i] < min_score)
             {
-                min_mtt_diff = m_tt[i];
+                min_score = score[i];
+
+                s1 = score1[i];
+                s2 = score2[i];
+                s3 = score3[i];
+                s4 = score4[i];
+
                 sf1 = 0.01 * (double)(i/151) + 0.5;
                 sf2 = 0.01 * (double)(i%151) + 0.5;
             }
@@ -210,9 +275,12 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     {
         ret.push_back(sf1);
         ret.push_back(sf2);
+        ret.push_back(min_score);
+        ret.push_back(s1);
+        ret.push_back(s2);
+        ret.push_back(s3);
+        ret.push_back(s4);
     }
-    free(pass);
-    free(m_tt);
 
     return ret;
 }
