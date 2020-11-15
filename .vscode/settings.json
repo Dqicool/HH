@@ -66,6 +66,9 @@
         "allocator": "cpp",
         "valarray": "cpp",
         "*.cuh": "cpp",
-        "*.cu": "cpp"
+        "*.cu": "cpp",
+        "__nullptr": "cpp",
+        "bitset": "cpp",
+        "codecvt": "cpp"
     }
 }

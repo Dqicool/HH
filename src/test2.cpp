@@ -10,9 +10,9 @@
 
 #define M_BB_SC     62.5
 #define M_TT_SC     62.5
-#define MET_SC_1    0.08
-#define MET_SC_2    0.005
-#define MET_SC_3    0.00125
+#define MET_SC_1    0.008
+#define MET_SC_2    0.0005
+#define MET_SC_3    0.000125
 #define CHI_SC      0.1
 
  float getPx(float pt, float phi){
@@ -68,16 +68,18 @@
     return (m_tt - m_baseline) * (m_tt - m_baseline) / scale_const_tt;
 }
 
- float getPsiMET(float vl_pt, float vh_pt, float tau_pt, float lep_pt, float omega,float sc_1, float sc_2, float sc_3)
+float getPsiMET(float vl_pt, float vh_pt, float tau_pt, float lep_pt, float omega,float sc_1, float sc_2, float sc_3)
 {
     float f_tau_l = vl_pt / (vl_pt + lep_pt);
     float f_tau_h = vh_pt / (vh_pt + tau_pt);
     float A_1 = 0.5 * ((f_tau_l - f_tau_h) / (f_tau_l + f_tau_h) + 1);
-    return (float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1 + 
-           (float)(A_1 > 0.8 && A_1 <= 1) * 0 + 
-           (float)(A_1 > 1)               * (omega - 1) * (omega - 1) / sc_2 + 
-           (float)(A_1 <= 0)               * (8 + omega * omega / sc_3);
+    float ret = ((float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1) +
+                ((float)(A_1 > 0.8 && A_1 <= 1) * 0) +
+                ((float)(omega > 1)               * (omega - 1) * (omega - 1) / sc_2) +
+                ((float)(omega <= 0)              * (80 + (omega * omega / sc_3)));
+    return ret;
 }
+
 
  float getPsiChi(float chi0, float chi1, float sc_chi)
 {
@@ -95,7 +97,7 @@ std::vector<double> gpu(   float bjet0_pt, float bjet0_eta,    float bjet0_phi, 
                             float chi0, float chi1)
 {
     std::vector<double> ret;
-    //mbb calculation
+        //mbb calculation
     float bjet0_scaled_pt = bjet0_pt * chi0;
     float bjet1_scaled_pt = bjet1_pt * chi1;
 
@@ -125,10 +127,21 @@ std::vector<double> gpu(   float bjet0_pt, float bjet0_eta,    float bjet0_phi, 
     float dphi_hv_scaled = getdphi(tau0_phi, met_scaled_phi);
     float dphi_lv_scaled = getdphi(lep0_phi, met_scaled_phi);
     bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (fabsf(dphi_hl) > fabsf(dphi_hv_scaled));
-    bool close_to_h_scaled = fabsf(dphi_hv_scaled) < CUDART_PIO4_F;// 10 degree
-    bool close_to_l_scaled = fabsf(dphi_lv_scaled) < CUDART_PIO4_F;
+    bool close_to_h_scaled = fabsf(dphi_hv_scaled) < CUDART_PIO4_F && fabsf(dphi_hv_scaled) < fabsf(dphi_lv_scaled);
+    bool close_to_l_scaled = fabsf(dphi_lv_scaled) < CUDART_PIO4_F && fabsf(dphi_lv_scaled) < fabsf(dphi_hv_scaled);
     bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
-    float omega = dphi_hv_scaled / dphi_hl;
+    float omega = -999;
+    if(v_pos_pass_scaled && !inside_hl_scaled && close_to_l_scaled && dphi_hv_scaled * dphi_hl < 0)
+    {
+        if(dphi_hl < 0)
+            omega = (dphi_hv_scaled - 2.0f * CUDART_PI_F) / dphi_hl;
+        else if (dphi_hv_scaled < 0)
+            omega = (dphi_hv_scaled + CUDART_PI_F * 2.0f) / dphi_hl;
+    }
+    else
+    {
+        omega = dphi_hv_scaled / dphi_hl;
+    }
 
     //p4 of vl vh
     float vh_scaled_pt =0;
@@ -140,10 +153,10 @@ std::vector<double> gpu(   float bjet0_pt, float bjet0_eta,    float bjet0_phi, 
     float vl_scaled_eta=0;
     float vl_scaled_phi=0;
     float vl_scaled_m  =0;
-
     float  m_tautau_scaled = -999;
     if(v_pos_pass_scaled)
     {
+        
         if (!inside_hl_scaled && close_to_h_scaled) 
         {
             vh_scaled_pt  = met_scaled_pt * cosf(fabsf(dphi_hv_scaled));
@@ -168,6 +181,8 @@ std::vector<double> gpu(   float bjet0_pt, float bjet0_eta,    float bjet0_phi, 
             vl_scaled_eta   = lep0_eta;
             vl_scaled_phi   = lep0_phi;
             vl_scaled_m     = 0;
+            if(vl_scaled_pt < 0 || vh_scaled_pt < 0)
+                std::cout<<"problem\n";
         }
         float  tautau_px = (getPx(vh_scaled_pt, vh_scaled_phi)+getPx(vl_scaled_pt, vl_scaled_phi)+getPx(tau0_pt, tau0_phi)+getPx(lep0_pt, lep0_phi));
         float  tautau_py = (getPy(vh_scaled_pt, vh_scaled_phi)+getPy(vl_scaled_pt, vl_scaled_phi)+getPy(tau0_pt, tau0_phi)+getPy(lep0_pt, lep0_phi));
@@ -191,18 +206,23 @@ std::vector<double> gpu(   float bjet0_pt, float bjet0_eta,    float bjet0_phi, 
 }
 
 int main(){
-    ROOT::RDataFrame df("NOMINAL", "debug.root");
-    auto bjet0 = (df.Take<ROOT::Math::PtEtaPhiMVector>("bjet_0_p4_n").GetValue())[0];
-    auto bjet1 = (df.Take<ROOT::Math::PtEtaPhiMVector>("bjet_1_p4_n").GetValue())[0];
-    auto lep0 =  (df.Take<ROOT::Math::PtEtaPhiMVector>("lep_0_p4_n").GetValue())[0];
-    auto tau0 =  (df.Take<ROOT::Math::PtEtaPhiMVector>("tau_0_p4_n").GetValue())[0];
-    auto met =   (df.Take<ROOT::Math::PtEtaPhiMVector>("met_reco_p4_n").GetValue())[0];
-    double chi0 = (df.Take<double>("bjet_0_pt_scale_fac").GetValue())[0];
-    double chi1 = (df.Take<double>("bjet_1_pt_scale_fac").GetValue())[0];
-    std::vector<double> gpu_res = gpu(bjet0.Pt(), bjet0.Eta(), bjet0.Phi(), bjet0.M(),
-                    bjet1.Pt(), bjet1.Eta(), bjet1.Phi(), bjet1.M(),
-                    lep0.Pt(), lep0.Eta(), lep0.Phi(), lep0.M(),
-                    tau0.Pt(), tau0.Eta(), tau0.Phi(), tau0.M(),
-                    met.Pt(), met.Eta(), met.Phi(), met.M(),
-                    chi0, chi1);
+    ROOT::RDataFrame df("NOMINAL", "output/03_sel_out/410470.txt.root");
+    uint i = 1;
+    auto bjet0 = (df.Take<ROOT::Math::PtEtaPhiMVector>("bjet_0_p4_n").GetValue());
+    auto bjet1 = (df.Take<ROOT::Math::PtEtaPhiMVector>("bjet_1_p4_n").GetValue());
+    auto lep0 =  (df.Take<ROOT::Math::PtEtaPhiMVector>("lep_0_p4_n").GetValue());
+    auto tau0 =  (df.Take<ROOT::Math::PtEtaPhiMVector>("tau_0_p4_n").GetValue());
+    auto met =   (df.Take<ROOT::Math::PtEtaPhiMVector>("met_reco_p4_n").GetValue());
+    auto chi0 = (df.Take<double>("bjet_0_pt_scale_fac").GetValue());
+    auto chi1 = (df.Take<double>("bjet_1_pt_scale_fac").GetValue());
+    for(uint i = 1; i<chi1.size(); i++)
+    {
+        std::vector<double> gpu_res = gpu(bjet0[i].Pt(), bjet0[i].Eta(), bjet0[i].Phi(), bjet0[i].M(),
+                                        bjet1[i].Pt(), bjet1[i].Eta(), bjet1[i].Phi(), bjet1[i].M(),
+                                        lep0[i].Pt(), lep0[i].Eta(), lep0[i].Phi(), lep0[i].M(),
+                                        tau0[i].Pt(), tau0[i].Eta(), tau0[i].Phi(), tau0[i].M(),
+                                        met[i].Pt(), met[i].Eta(), met[i].Phi(), met[i].M(),
+                                        chi0[i], chi1[i]);
+    } 
+    std::cout<<"DONE\n";
 }

@@ -24,7 +24,7 @@ TH1D * getDraw(const char* file, const char* dist,  Color_t col)
     TH1D *h = NULL;
     if(file_exists_test(file))
     {
-        auto histoname = "h_" + (string)dist;
+        auto histoname = (string)dist;
         TFile *f = TFile::Open(file, "read");
         h = (TH1D*)f->Get(&histoname[0]);
         h->SetFillColor(col);
@@ -181,6 +181,12 @@ void plotProp(const char* outfile, const char* dist, bool truth){
         h_inc_data->Write();
         out->Close();
 
+        TH1D* h_scaled_zz = (TH1D*)(histo_mc[0].Clone("h_scaled_zz"));
+        h_scaled_zz->Scale(150);
+        h_scaled_zz->SetFillColorAlpha(kBlue, 0);
+        h_scaled_zz->SetStats(0);
+        h_scaled_zz->SetLineWidth(3);
+
     // //print stat
     //     cout<<"det\t"<<h_inc_cr->Integral()<<"\t\t"<<(cr_histo_mc[0]).Integral() + (cr_histo_mc[1]).Integral()<<"\t\t"<<h_inc_cr->Integral()/((cr_histo_mc[0]).Integral() + (cr_histo_mc[1]).Integral())<<":1"<<endl;
     //     cout<<"cut\t"<<h_inc_cut->Integral()<<"\t\t"<<(cut_histo_mc[0]).Integral() + (cut_histo_mc[1]).Integral()<<"\t\t"<<h_inc_cut->Integral()/((cut_histo_mc[0]).Integral() + (cut_histo_mc[1]).Integral())<<":1"<<endl;
@@ -195,17 +201,24 @@ void plotProp(const char* outfile, const char* dist, bool truth){
             h_inc->SetFillColor(kBlack);
             h_inc->SetFillStyle(3017);
             //h_inc->SetAxisRange(0,YMAX,"Y");
-            stack->Draw("hist");
+            h_scaled_zz->SetTitle(dist);
+            h_scaled_zz->Draw("hist");
+            stack->Draw("hist, same");
             h_inc->Draw("E2, same");
+            
             h_inc_data->SetMarkerStyle(kFullCircle);
             h_inc_data->SetMarkerSize(2.0f);
             h_inc_data->SetLineWidth(3.0f);
+            h_inc_data->SetLineColor(kBlack);
             h_inc_data->Draw("E1, SAME");
+            h_scaled_zz->Draw("hist, same");
+
 
             TLegend legend(0.6,0.7,0.9,0.9);
-            legend.AddEntry(h_inc_data, "data", "lpf");
+            legend.AddEntry(h_inc_data, "data", "lpfe");
             legend.AddEntry(&histo_mc.back(), "ttbar", "lpf");
             legend.AddEntry(&histo_mc[0], "zz", "lpf");
+            legend.AddEntry(h_scaled_zz, "zz x 150", "l");
             legend.Draw();
 
             auto save_name = "plots/" + (string)dist + "_stack.png";
@@ -224,26 +237,9 @@ void plotProp(const char* outfile, const char* dist, bool truth){
 int main()
 {
     cout<<"mbb:"<<endl;
-    plotProp("output/05_stack_out/mbb.root", "m_bb", 0);
-    cout<<"drbb:"<<endl;
-    plotProp("output/05_stack_out/drbb.root", "delta_R_bb", 0);
-    cout<<"mtauvis:"<<endl;
-    plotProp("output/05_stack_out/mtauvis.root", "m_tau_vis", 0);
-    cout<<"mtaucol:"<<endl;
-    plotProp("output/05_stack_out/mtaucol.root", "m_tau_col", 0);
-
-    cout<<"m4body:"<<endl;
-    plotProp("output/05_stack_out/m4body.root", "m_4_body", 0);
-    cout<<"mtop0:"<<endl;
-    plotProp("output/05_stack_out/mtop0.root", "m_top_0", 0);
-    cout<<"mtop1:"<<endl;
-    plotProp("output/05_stack_out/mtop1.root", "m_top_1", 0);
-    cout<<"drtt:"<<endl;
-    plotProp("output/05_stack_out/drtt.root", "delta_R_tautau", 0);
-
-    cout<<"drtop0cons:"<<endl;
-    plotProp("output/05_stack_out/drtop0cons.root", "top_0_deltaR_con", 0);
-    cout<<"drtop1cons:"<<endl;
-    plotProp("output/05_stack_out/drtop1cons.root", "top_1_deltaR_con", 0);
-    
+    //plotProp("output/05_stack_out/score.root", "score", 0);
+    plotProp("output/05_stack_out/score_mbb.root", "score_mbb", 0);
+    plotProp("output/05_stack_out/score_mtt.root", "score_mtt", 0);
+    plotProp("output/05_stack_out/score_met.root", "score_met", 0);
+    plotProp("output/05_stack_out/score_chi.root", "score_chi", 0);
 }

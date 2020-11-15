@@ -8,10 +8,10 @@
 
 #define M_BB_SC     62.5
 #define M_TT_SC     62.5
-#define MET_SC_1    0.08
-#define MET_SC_2    0.005
-#define MET_SC_3    0.00125
-#define CHI_SC      0.1
+#define MET_SC_1    0.008
+#define MET_SC_2    0.0005
+#define MET_SC_3    0.000125
+#define CHI_SC      0.04
 
 __device__ float getPx(float pt, float phi){
     return pt * cosf(phi);
@@ -71,10 +71,11 @@ __device__ float getPsiMET(float vl_pt, float vh_pt, float tau_pt, float lep_pt,
     float f_tau_l = vl_pt / (vl_pt + lep_pt);
     float f_tau_h = vh_pt / (vh_pt + tau_pt);
     float A_1 = 0.5 * ((f_tau_l - f_tau_h) / (f_tau_l + f_tau_h) + 1);
-    return (float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1 + 
-           (float)(A_1 > 0.8 && A_1 <= 1) * 0 + 
-           (float)(A_1 > 1)               * (omega - 1) * (omega - 1) / sc_2 + 
-           (float)(A_1 < 0)               * (8 + omega * omega / sc_3);
+    float ret = ((float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1) +
+                ((float)(A_1 > 0.8 && A_1 <= 1) * 0) +
+                ((float)(omega > 1)               * (omega - 1) * (omega - 1) / sc_2) +
+                ((float)(omega <= 0)              * (80 + (omega * omega / sc_3)));
+    return ret;
 }
 
 __device__ float getPsiChi(float chi0, float chi1, float sc_chi)
@@ -96,6 +97,13 @@ __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,
     int j = (threadIdx.y + blockIdx.y * blockDim.y);
     float chi0 = 0.5 + 0.01 * i;
     float chi1 = 0.5 + 0.01 * j;
+    // initialise
+    pass[i*N + j] = 0;
+    score1[i*N + j]  = -999;
+    score2[i*N + j]  = -999;
+    score3[i*N + j]  = -999;
+    score4[i*N + j]  = -999;
+    score[i*N + j]   = -999;
     //mbb calculation
     float bjet0_scaled_pt = bjet0_pt * chi0;
     float bjet1_scaled_pt = bjet1_pt * chi1;
@@ -126,10 +134,21 @@ __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,
     float dphi_hv_scaled = getdphi(tau0_phi, met_scaled_phi);
     float dphi_lv_scaled = getdphi(lep0_phi, met_scaled_phi);
     bool inside_hl_scaled = (dphi_hl * dphi_hv_scaled > 0) && (fabsf(dphi_hl) > fabsf(dphi_hv_scaled));
-    bool close_to_h_scaled = fabsf(dphi_hv_scaled) < CUDART_PIO4_F;// 10 degree
-    bool close_to_l_scaled = fabsf(dphi_lv_scaled) < CUDART_PIO4_F;
+    bool close_to_h_scaled = fabsf(dphi_hv_scaled) < CUDART_PIO4_F && fabsf(dphi_hv_scaled) < fabsf(dphi_lv_scaled);
+    bool close_to_l_scaled = fabsf(dphi_lv_scaled) < CUDART_PIO4_F && fabsf(dphi_lv_scaled) < fabsf(dphi_hv_scaled);
     bool v_pos_pass_scaled = inside_hl_scaled || close_to_h_scaled || close_to_l_scaled;
-    float omega = dphi_hv_scaled / dphi_hl;
+    float omega = -999;
+    if(!inside_hl_scaled && close_to_l_scaled && dphi_hv_scaled * dphi_hl < 0)
+    {
+        if(dphi_hl < 0)
+            omega = (dphi_hv_scaled - 2 * CUDART_PI_F) / dphi_hl;
+        else if (dphi_hv_scaled < 0)
+            omega = (dphi_hv_scaled + CUDART_PI_F * 2.0f) / dphi_hl;
+    }
+    else
+    {
+        omega = dphi_hv_scaled / dphi_hl;
+    }
 
     //p4 of vl vh
     float vh_scaled_pt =0;
@@ -141,10 +160,10 @@ __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,
     float vl_scaled_eta=0;
     float vl_scaled_phi=0;
     float vl_scaled_m  =0;
-
     float  m_tautau_scaled = -999;
     if(v_pos_pass_scaled)
     {
+        
         if (!inside_hl_scaled && close_to_h_scaled) 
         {
             vh_scaled_pt  = met_scaled_pt * cosf(fabsf(dphi_hv_scaled));
@@ -200,13 +219,13 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     size_t size_bool  = N * N * sizeof(bool);
     size_t size_float = N * N * sizeof(float);
     //allocate arrays on CPU
-    bool pass[N*N]{ 0 };
+    bool pass[N*N];
     
-    float score[N*N] { -999 };
-    float score1[N*N] { -999 };
-    float score2[N*N] { -999 };
-    float score3[N*N] { -999 };
-    float score4[N*N] { -999 };
+    float score[N*N];
+    float score1[N*N];
+    float score2[N*N];
+    float score3[N*N];
+    float score4[N*N];
     //allocate arrays on GPU
     bool *pass_dev;
     cudaMalloc((void**)&pass_dev, size_bool);
@@ -218,12 +237,19 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     cudaMalloc((void**)&score3_dev, size_float);
     cudaMalloc((void**)&score4_dev, size_float);
     //copy stuff to GPU
-    cudaMemcpy(pass_dev,pass,size_bool,cudaMemcpyHostToDevice);
-    cudaMemcpy(score_dev,score,size_float,cudaMemcpyHostToDevice);
-    cudaMemcpy(score1_dev,score1,size_float,cudaMemcpyHostToDevice);
-    cudaMemcpy(score2_dev,score2,size_float,cudaMemcpyHostToDevice);
-    cudaMemcpy(score3_dev,score3,size_float,cudaMemcpyHostToDevice);
-    cudaMemcpy(score4_dev,score4,size_float,cudaMemcpyHostToDevice);
+    // cudaMemcpy(pass_dev,pass,size_bool,cudaMemcpyHostToDevice);
+    // cudaMemcpy(score_dev,score,size_float,cudaMemcpyHostToDevice);
+    // cudaMemcpy(score1_dev,score1,size_float,cudaMemcpyHostToDevice);
+    // cudaMemcpy(score2_dev,score2,size_float,cudaMemcpyHostToDevice);
+    // cudaMemcpy(score3_dev,score3,size_float,cudaMemcpyHostToDevice);
+    // cudaMemcpy(score4_dev,score4,size_float,cudaMemcpyHostToDevice);
+    ////memset version
+    // cudaMemset(score_dev, 0, size_float);
+    // cudaMemset(score1_dev, 0, size_float);
+    // cudaMemset(score2_dev, 0, size_float);
+    // cudaMemset(score3_dev, 0, size_float);
+    // cudaMemset(score4_dev, 0, size_float);
+    // cudaMemset(pass_dev, 0, size_float);
 
     dim3 grid(N, N);
     mykernel<<<grid, 1>>>(  bjet0_pt,  bjet0_eta,     bjet0_phi,     bjet0_m,
