@@ -4,6 +4,8 @@
 #include <cuda_runtime_api.h>
 #include <math_constants.h>
 #include "GPUScaleB.cuh"
+#include <thrust/device_ptr.h>
+#include <thrust/extrema.h>
 #define Z_MASS 91.1876
 
 #define M_BB_SC     62.5
@@ -91,19 +93,21 @@ __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,
                             float lep0_pt,  float lep0_eta,     float lep0_phi,     float lep0_m,
                             float tau0_pt,  float tau0_eta,     float tau0_phi,     float tau0_m,
                             float met_pt,   float met_eta,      float met_phi,      float met_m,
-                            bool * pass, float* score, float* score1, float* score2, float* score3, float* score4, int N)
+                            bool * pass, float* score, int N)
 {
     int i = (threadIdx.x + blockIdx.x * blockDim.x);
     int j = (threadIdx.y + blockIdx.y * blockDim.y);
     float chi0 = 0.5 + 0.01 * i;
     float chi1 = 0.5 + 0.01 * j;
     // initialise
-    pass[i*N + j] = 0;
-    score1[i*N + j]  = -999;
-    score2[i*N + j]  = -999;
-    score3[i*N + j]  = -999;
-    score4[i*N + j]  = -999;
-    score[i*N + j]   = -999;
+    size_t sizeof_array = N*N;
+    size_t ind = i*N+j;
+    pass[ind] = 0;
+    score[sizeof_array*1 + ind]  = -999;
+    score[sizeof_array*2 + ind]  = -999;
+    score[sizeof_array*3 + ind]  = -999;
+    score[sizeof_array*4 + ind]  = -999;
+    score[ind]   = 100000;
     //mbb calculation
     float bjet0_scaled_pt = bjet0_pt * chi0;
     float bjet1_scaled_pt = bjet1_pt * chi1;
@@ -197,16 +201,16 @@ __global__ void mykernel(   float bjet0_pt, float bjet0_eta,    float bjet0_phi,
     }
     if(m_tautau_scaled > 0)
     {
-        pass[i*N + j] = 1;
+        pass[ind] = 1;
         float score_m_bb = getPsiMbb(m_bb_scaled, Z_MASS, M_BB_SC);
         float score_m_tt = getPsiMtt(m_tautau_scaled, Z_MASS, M_TT_SC);
         float score_met  = getPsiMET(vl_scaled_pt, vh_scaled_pt, tau0_pt, lep0_pt, omega, MET_SC_1, MET_SC_2, MET_SC_3);
         float score_chi  = getPsiChi(chi0, chi1, CHI_SC);
-        score1[i*N + j]  = score_m_bb;
-        score2[i*N + j]  = score_m_tt;
-        score3[i*N + j]  = score_met;
-        score4[i*N + j]  = score_chi;
-        score[i*N + j] = sqrtf(score_chi * score_chi + score_m_bb * score_m_bb + score_m_tt * score_m_tt + score_met * score_met);
+        score[sizeof_array*1 + ind]  = score_m_bb;
+        score[sizeof_array*2 + ind]  = score_m_tt;
+        score[sizeof_array*3 + ind]  = score_met;
+        score[sizeof_array*4 + ind]  = score_chi;
+        score[ind] = sqrtf(score_chi * score_chi + score_m_bb * score_m_bb + score_m_tt * score_m_tt + score_met * score_met);
     }
 }
 
@@ -215,28 +219,19 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     float lep0_pt,  float lep0_eta,     float lep0_phi,     float lep0_m,
     float tau0_pt,  float tau0_eta,     float tau0_phi,     float tau0_m,
     float met_pt,   float met_eta,      float met_phi,      float met_m){
-    int N = 151;
-    size_t size_bool  = N * N * sizeof(bool);
-    size_t size_float = N * N * sizeof(float);
-    //allocate arrays on CPU
-    bool pass[N*N];
-    
-    float score[N*N];
-    float score1[N*N];
-    float score2[N*N];
-    float score3[N*N];
-    float score4[N*N];
+    size_t N = 151;
+    size_t NN = N*N;
+    size_t size_bool  = NN * sizeof(bool);
+    size_t size_float = 5 * NN * sizeof(float);
+
     //allocate arrays on GPU
     bool *pass_dev;
     cudaMalloc((void**)&pass_dev, size_bool);
 
-    float *score_dev, *score1_dev, *score2_dev, *score3_dev, *score4_dev; 
+    float *score_dev;
     cudaMalloc((void**)&score_dev, size_float);
-    cudaMalloc((void**)&score1_dev, size_float);
-    cudaMalloc((void**)&score2_dev, size_float);
-    cudaMalloc((void**)&score3_dev, size_float);
-    cudaMalloc((void**)&score4_dev, size_float);
-    //copy stuff to GPU
+
+    ////copy stuff to GPU
     // cudaMemcpy(pass_dev,pass,size_bool,cudaMemcpyHostToDevice);
     // cudaMemcpy(score_dev,score,size_float,cudaMemcpyHostToDevice);
     // cudaMemcpy(score1_dev,score1,size_float,cudaMemcpyHostToDevice);
@@ -257,21 +252,9 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
                             lep0_pt,   lep0_eta,      lep0_phi,      lep0_m,
                             tau0_pt,   tau0_eta,      tau0_phi,      tau0_m,
                             met_pt,    met_eta,       met_phi,       met_m,
-                            pass_dev, score_dev, score1_dev, score2_dev, score3_dev, score4_dev, N);
+                            pass_dev, score_dev, N);
     //cudaDeviceSynchronize();
-    cudaMemcpy(pass,pass_dev,size_bool,cudaMemcpyDeviceToHost);
-    cudaMemcpy(score,score_dev,size_float,cudaMemcpyDeviceToHost);
-    cudaMemcpy(score1,score1_dev,size_float,cudaMemcpyDeviceToHost);
-    cudaMemcpy(score2,score2_dev,size_float,cudaMemcpyDeviceToHost);
-    cudaMemcpy(score3,score3_dev,size_float,cudaMemcpyDeviceToHost);
-    cudaMemcpy(score4,score4_dev,size_float,cudaMemcpyDeviceToHost);
-    cudaFree(pass_dev);
-    cudaFree(score_dev);
-    cudaFree(score1_dev);
-    cudaFree(score2_dev);
-    cudaFree(score3_dev);
-    cudaFree(score4_dev);
-
+    
     std::vector<double> ret;
     double sf1 = -999;
     double sf2 = -999;
@@ -280,33 +263,49 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     double s2 = 100;
     double s3 = 100;
     double s4 = 100;
-    for(int i =0; i < N * N; i++){
-        if (pass[i])
-        {
-            if(score[i] < min_score)
-            {
-                min_score = score[i];
+    // //CPU find min
+    // bool pass[NN];
+    // float score[NN*5];
+    // cudaMemcpy(pass,pass_dev,size_bool,cudaMemcpyDeviceToHost);
+    // cudaMemcpy(score,score_dev,size_float,cudaMemcpyDeviceToHost);
+    // for(size_t i =0; i < NN; i++){
+    //     if (pass[i])
+    //     {
+    //         if(score[i] < min_score)
+    //         {
+    //             min_score = score[i];
 
-                s1 = score1[i];
-                s2 = score2[i];
-                s3 = score3[i];
-                s4 = score4[i];
+    //             s1 = score[NN + i];
+    //             s2 = score[NN *2 + i];
+    //             s3 = score[NN *3 + i];
+    //             s4 = score[NN *4 + i];
 
-                sf1 = 0.01 * (double)(i/151) + 0.5;
-                sf2 = 0.01 * (double)(i%151) + 0.5;
-            }
-        }
+    //             sf1 = 0.01 * (double)(i/151) + 0.5;
+    //             sf2 = 0.01 * (double)(i%151) + 0.5;
+    //         }
+    //     }
+    // }
+
+    //GPU find min
+    thrust::device_ptr<float> score_vec =  thrust::device_pointer_cast(score_dev);
+    int min_offset = thrust::min_element(score_vec, score_vec + NN) - score_vec;
+
+    min_score = *(score_vec + min_offset);
+    if (min_score < 200)
+    {
+        s1 = *(score_vec + NN   + min_offset);
+        s2 = *(score_vec + NN*2 + min_offset);
+        s3 = *(score_vec + NN*3 + min_offset);
+        s4 = *(score_vec + NN*4 + min_offset);
+        sf1 = 0.01 * (double)(min_offset/N) + 0.5;
+        sf2 = 0.01 * (double)(min_offset%N) + 0.5;
     }
     if (sf1 > 0 && sf2 > 0)
     {
-        ret.push_back(sf1);
-        ret.push_back(sf2);
-        ret.push_back(min_score);
-        ret.push_back(s1);
-        ret.push_back(s2);
-        ret.push_back(s3);
-        ret.push_back(s4);
+        ret = {sf1, sf2, min_score, s1, s2, s3, s4};
     }
-
+    
+    cudaFree(pass_dev);
+    cudaFree(score_dev);
     return ret;
 }

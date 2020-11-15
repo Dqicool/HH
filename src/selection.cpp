@@ -2,14 +2,14 @@
 #include <chrono>
 
 #define DEBUG
-#define MT
+//#define MT
 
 #define LUMI (58.4501+43.5873+36.2369) //fb-1
 
 void selection(const char* infile, const char* outfile)
 {
     #ifdef MT 
-    ROOT::EnableImplicitMT(4);
+    ROOT::EnableImplicitMT(2);
     #endif
     ROOT::RDataFrame df("NOMINAL", infile);
     
@@ -52,8 +52,8 @@ int main()
 
 // Store the time difference between start and end
 
-    selection("output/02_presel_out/363356.txt.root","debug.root");
-    //selection("output/02_presel_out/410470.txt.root","debug.root");
+    //selection("output/02_presel_out/363356.txt.root","debug.root");
+    selection("output/02_presel_out/410470.txt.root","debug.root");
     //copyMeta("output/convert_out/361104.txt.root","debug.root");
     auto end = std::chrono::steady_clock::now();
     auto diff = end - start;

@@ -36,7 +36,7 @@ build/selection.o: src/selection.h src/genAna.h
 	$(CXX) $(ROOTFLAGS) -c -g src/selection.cpp -o build/selection.o $(PWDINC)
 
 build/GPUScaleB.o: src/GPUScaleB.cu src/GPUScaleB.cuh
-	$(CUDA_CC) -O2 -c src/GPUScaleB.cu -o build/GPUScaleB.o $(CUDA_FLAG) $(CUDA_INC) $(PWDINC)
+	$(CUDA_CC) -O3 -c src/GPUScaleB.cu -o build/GPUScaleB.o $(CUDA_FLAG) $(CUDA_INC) $(PWDINC)
 
 clean:
 	rm -rf build/*
