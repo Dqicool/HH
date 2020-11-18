@@ -182,7 +182,7 @@ void plotProp(const char* outfile, const char* dist, bool truth){
         out->Close();
 
         TH1D* h_scaled_zz = (TH1D*)(histo_mc[0].Clone("h_scaled_zz"));
-        h_scaled_zz->Scale(150);
+        h_scaled_zz->Scale(200);
         h_scaled_zz->SetFillColorAlpha(kBlue, 0);
         h_scaled_zz->SetStats(0);
         h_scaled_zz->SetLineWidth(3);
@@ -218,7 +218,7 @@ void plotProp(const char* outfile, const char* dist, bool truth){
             legend.AddEntry(h_inc_data, "data", "lpfe");
             legend.AddEntry(&histo_mc.back(), "ttbar", "lpf");
             legend.AddEntry(&histo_mc[0], "zz", "lpf");
-            legend.AddEntry(h_scaled_zz, "zz x 150", "l");
+            legend.AddEntry(h_scaled_zz, "zz x 200", "l");
             legend.Draw();
 
             auto save_name = "plots/" + (string)dist + "_stack.png";
@@ -237,7 +237,7 @@ void plotProp(const char* outfile, const char* dist, bool truth){
 int main()
 {
     cout<<"mbb:"<<endl;
-    //plotProp("output/05_stack_out/score.root", "score", 0);
+    plotProp("output/05_stack_out/score.root", "score", 0);
     plotProp("output/05_stack_out/score_mbb.root", "score_mbb", 0);
     plotProp("output/05_stack_out/score_mtt.root", "score_mtt", 0);
     plotProp("output/05_stack_out/score_met.root", "score_met", 0);

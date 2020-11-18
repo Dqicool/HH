@@ -1,15 +1,15 @@
 #include "selection.h"
 #include <chrono>
 
-#define DEBUG
-//#define MT
+//#define DEBUG
+#define MT
 
 #define LUMI (58.4501+43.5873+36.2369) //fb-1
 
 void selection(const char* infile, const char* outfile)
 {
     #ifdef MT 
-    ROOT::EnableImplicitMT(2);
+    ROOT::EnableImplicitMT(4);
     #endif
     ROOT::RDataFrame df("NOMINAL", infile);
     
@@ -24,6 +24,8 @@ void selection(const char* infile, const char* outfile)
                 .Define("score_m_tt", [](struct event evt){return evt.score_m_tt;}, {"evt"})
                 .Define("score_met", [](struct event evt){return evt.score_met;}, {"evt"})
                 .Define("score_chi", [](struct event evt){return evt.score_chi;}, {"evt"})
+                .Filter("bjet_0_pt_scale_fac != 0.5 && bjet_0_pt_scale_fac != 2")
+                .Filter("bjet_1_pt_scale_fac != 0.5 && bjet_1_pt_scale_fac != 2")
         ;
 
     if(df.HasColumn("weight_mc"))
@@ -40,18 +42,13 @@ void selection(const char* infile, const char* outfile)
         std::vector<std::string> snap_column = {"score", "score_m_bb", "score_m_tt", "score_met", "score_chi", "bjet_0_pt_scale_fac", "bjet_1_pt_scale_fac", "weight"};
         ff.Snapshot("NOMINAL", outfile, snap_column);
     }
-    std::cout<<infile<<"...\tdone\n";
+    std::cout<<infile<<"...\t\t\tdone\n";
 }
 
 #ifdef DEBUG
 int main()
 {
     auto start = std::chrono::steady_clock::now();
-
-
-
-// Store the time difference between start and end
-
     //selection("output/02_presel_out/363356.txt.root","debug.root");
     selection("output/02_presel_out/410470.txt.root","debug.root");
     //copyMeta("output/convert_out/361104.txt.root","debug.root");

@@ -28,8 +28,9 @@ void draw(const char *in_file, const char *out_histo)
     //book histos
     TH1::SetDefaultSumw2();
     //TH1D h_mbb;
-    TH2D h_sf_log = (ef.Histo2D({"h_b_jet_scale_fac_log", "#chi_{0} vs #chi_{1}", 20, -1, 1, 20, -1, 1}, {"log2_bjet0_pt_sf"}, {"log2_bjet1_pt_sf"}, {"weight"})).GetValue();
-    TH2D h_sf_lin = (ef.Histo2D({"h_b_jet_scale_fac_lin", "#chi_{0} vs #chi_{1}", 151, 0.5 - 0.005, 2+0.005, 151, 0.5-0.005, 2+0.005}, {"bjet_0_pt_scale_fac"}, {"bjet_1_pt_scale_fac"}, {"weight"})).GetValue();
+    TH2D h_sf_log = (ef.Histo2D({"h_b_jet_scale_fac_log", "#chi_{0} vs #chi_{1}", 30, -1, 1, 30, -1, 1}, {"log2_bjet0_pt_sf"}, {"log2_bjet1_pt_sf"}, {"weight"})).GetValue();
+    //TH2D h_sf_lin = (ef.Histo2D({"h_b_jet_scale_fac_lin", "#chi_{0} vs #chi_{1}", 151, 0.5 - 0.005, 2+0.005, 151, 0.5-0.005, 2+0.005}, {"bjet_0_pt_scale_fac"}, {"bjet_1_pt_scale_fac"}, {"weight"})).GetValue();
+    TH2D h_sf_lin = (ef.Histo2D({"h_b_jet_scale_fac_lin", "#chi_{0} vs #chi_{1}", 30, 0.5, 2, 30, 0.5, 2}, {"bjet_0_pt_scale_fac"}, {"bjet_1_pt_scale_fac"}, {"weight"})).GetValue();
     TH1D h_score_met = (ef.Histo1D({"score_met", "", 100, 0, 100}, {"score_met"}, {"weight"})).GetValue();
     TH1D h_score_mbb = (ef.Histo1D({"score_mbb", "", 100, 0, 100}, {"score_m_bb"}, {"weight"})).GetValue();
     TH1D h_score_mtt = (ef.Histo1D({"score_mtt", "", 100, 0, 100}, {"score_m_tt"}, {"weight"})).GetValue();
