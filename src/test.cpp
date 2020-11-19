@@ -14,10 +14,4 @@ void getCSV(){
 
 int main()
 {
-    ROOT::Math::PtEtaPhiMVector a(1,2,3,4);
-    ROOT::Math::PtEtaPhiMVector b(0,0,0,0);
-    vPos vp = OUTSIDE_HL_CLOSE_TO_L;
-
-    std::cout<<(uint)vp<<"\t";
-
 }

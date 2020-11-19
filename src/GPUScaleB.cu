@@ -13,7 +13,7 @@
 #define MET_SC_1    0.008
 #define MET_SC_2    0.0005
 #define MET_SC_3    0.000125
-#define CHI_SC      0.04
+#define CHI_SC      0.16
 
 __device__ float getPx(float pt, float phi){
     return pt * cosf(phi);
@@ -73,18 +73,49 @@ __device__ float getPsiMET(float vl_pt, float vh_pt, float tau_pt, float lep_pt,
     float f_tau_l = vl_pt / (vl_pt + lep_pt);
     float f_tau_h = vh_pt / (vh_pt + tau_pt);
     float A_1 = 0.5 * ((f_tau_l - f_tau_h) / (f_tau_l + f_tau_h) + 1);
-    float ret = ((float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1) +
-                ((float)(A_1 > 0.8 && A_1 <= 1) * 0) +
-                ((float)(omega > 1)               * (omega - 1) * (omega - 1) / sc_2) +
-                ((float)(omega <= 0)              * (80 + (omega * omega / sc_3)));
+    float ret = ((float)(A_1 > 0 && A_1 <= 0.8) * (A_1 - 0.8) * (A_1 - 0.8) / sc_1)     +
+                ((float)(A_1 > 0.8 && A_1 <= 1) * 0)                                    +
+                ((float)(omega > 1)               * (omega - 1) * (omega - 1) / sc_2)   +
+                ((float)(omega <= 0)              * (80 + (omega * omega / sc_3)))      ;
     return ret;
 }
 
 __device__ float getPsiChi(float chi0, float chi1, float sc_chi)
 {
-    float log2_chi0 = log2f(chi0);
-    float log2_chi1 = log2f(chi1);
-    float r2 = log2_chi0 * log2_chi0 + log2_chi1 * log2_chi1;
+    // calculate on log plane
+    float x = log2f(chi0);
+    float y = log2f(chi1);
+
+    float x_0      = 9.62213e-02;
+    float y_0      = 1.18202e-01;
+
+    float sigma_x  = 4.81883e-01;
+    float sigma_y  = 6.37269e-01;
+
+    float theta    = 5.40952e-01;
+
+    // // calculate on linear plane
+    // float x = chi0;
+    // float y = chi1;
+
+    // float x_0      = 1.07186e+00;
+    // float y_0      = 1.05827e+00;
+
+    // float sigma_x  = 3.27060e-01;
+    // float sigma_y  = 4.99482e-01;
+
+    // float theta    = 3.50592e-01;
+
+    float ell1 = (powf((x - x_0) * cosf(theta) + (y - y_0) * sinf(theta), 2)) / powf(sigma_x, 2);
+    float ell2 = (powf((x - x_0) * sinf(theta) - (y - y_0) * cosf(theta), 2)) / powf(sigma_y, 2);
+    float r2 = ell1+ell2;
+
+    // float x         = log2f(chi0);
+    // float y         = log2f(chi1);
+    // float x_0       = 9.62213e-02;
+    // float y_0       = 1.18202e-01;
+    // float r2 = powf((x - x_0), 2) + powf((y - y_0), 2);
+
     return r2 / sc_chi;
 }
 
@@ -263,6 +294,7 @@ std::vector<double> GPUScaleB(float bjet0_pt, float bjet0_eta,    float bjet0_ph
     double s2 = 100;
     double s3 = 100;
     double s4 = 100;
+
     // //CPU find min
     // bool pass[NN];
     // float score[NN*5];

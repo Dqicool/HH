@@ -24,8 +24,7 @@ void selection(const char* infile, const char* outfile)
                 .Define("score_m_tt", [](struct event evt){return evt.score_m_tt;}, {"evt"})
                 .Define("score_met", [](struct event evt){return evt.score_met;}, {"evt"})
                 .Define("score_chi", [](struct event evt){return evt.score_chi;}, {"evt"})
-                .Filter("bjet_0_pt_scale_fac != 0.5 && bjet_0_pt_scale_fac != 2")
-                .Filter("bjet_1_pt_scale_fac != 0.5 && bjet_1_pt_scale_fac != 2")
+                .Filter("")
         ;
 
     if(df.HasColumn("weight_mc"))

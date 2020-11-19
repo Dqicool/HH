@@ -81,11 +81,34 @@ float getPsiMET(float vl_pt, float vh_pt, float tau_pt, float lep_pt, float omeg
 }
 
 
- float getPsiChi(float chi0, float chi1, float sc_chi)
+float getPsiChi(float chi0, float chi1, float sc_chi)
 {
-    float log2_chi0 = log2f(chi0);
-    float log2_chi1 = log2f(chi1);
-    float r2 = log2_chi0 * log2_chi0 + log2_chi1 * log2_chi1;
+    // calculate on log plane
+    float x = log2f(chi0);
+    float y = log2f(chi1);
+
+    float x_0      = 9.62213e-02;
+    float y_0      = 1.18202e-01;
+
+    float sigma_x  = 4.81883e-01;
+    float sigma_y  = 6.37269e-01;
+
+    float theta    = 5.40952e-01;
+    // // calculate on linear plane
+    // float x = chi0;
+    // float y = chi1;
+
+    // float x_0      = 1.07186e+00;
+    // float y_0      = 1.05827e+00;
+
+    // float sigma_x  = 3.27060e-01;
+    // float sigma_y  = 4.99482e-01;
+
+    // float theta    = 3.50592e-01;
+
+    float ell1 = (powf((x - x_0) * cosf(theta) + (y - y_0) * sinf(theta), 2)) / powf(sigma_x, 2);
+    float ell2 = (powf((x - x_0) * sinf(theta) - (y - y_0) * cosf(theta), 2)) / powf(sigma_y, 2);
+    float r2 = ell1+ell2;
     return r2 / sc_chi;
 }
 

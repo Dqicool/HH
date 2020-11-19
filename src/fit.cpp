@@ -43,13 +43,15 @@ double Guass2D(double *x, double *par) {
 }
  
 int main() {
-    //
+    std::cout<<"\n\n\n\nLINEAR\n";
     const Int_t npar = 6;
     double fparams[npar] =  {0,1.05135,1.05104,1,2,TMath::PiOver4()};
     TF2 *f = new TF2("Gauss2D", Guass2D, 0.5, 2, 0.5, 2, npar);
     // f->SetParLimits(1, 1.05135, 1.05135);
     // f->SetParLimits(2, 1.05104, 1.05104);
-    // f->SetParLimits(5, TMath::PiOver4(), TMath::PiOver4());
+    f->SetParLimits(5, -TMath::Pi(), TMath::Pi());
+    f->SetParLimits(3, 0, 10);
+    f->SetParLimits(4, 0, 10);
     // f->SetParLimits(3, 1, 1);
     // f->SetParLimits(4, 2, 2);
     f->SetParameters(fparams);
@@ -58,15 +60,20 @@ int main() {
     h->Fit("Gauss2D", "", "COLZ");
     f->Draw("cont1 same");
     c1.SaveAs("debug_lin.png");
+    std::cout<<"chi2/ndf = "<<f->GetChisquare()/(h->GetNbinsX() * h->GetNbinsY() - 6)<<std::endl;
 
+    std::cout<<"\n\n\n\nLOG\n";
     double fparams2[npar] = {1,0,0,1,1,TMath::PiOver4()};
     TF2 *ff = new TF2("Gauss2D2", Guass2D, -1, 1, -1, 1, npar);
     ff->SetParameters(fparams2);
-    //ff->SetParLimits(5, TMath::PiOver4(), TMath::PiOver4());
+    ff->SetParLimits(3, 0, 10);
+    ff->SetParLimits(4, 0, 10);
+    ff->SetParLimits(5, -TMath::Pi(), TMath::Pi());
     TH2D *hh = getDraw2D("output/04_plot_out/363356.txt.root", "h_b_jet_scale_fac_log");
     TCanvas c2("c2","",2000,2000);
     hh->Fit("Gauss2D2", "", "COLZ");
     ff->Draw("cont1 same");
     c2.SaveAs("debug_log.png");
+    std::cout<<"chi2/ndf = "<<ff->GetChisquare()/(h->GetNbinsX() * h->GetNbinsY() - 6)<<std::endl;
     return 0;
 }
