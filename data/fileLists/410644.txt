@@ -1,5 +1,0 @@
-/mnt/NVME/HH//data/user.dbaronmo.v24.mc.410644.PoPy8_A14_st_schan_lept_top.M4.e6527_s3126_r10201_p4097.sv2_Le/user.dbaronmo.21943394._000001.LepUniv_ttbar.root
-/mnt/NVME/HH//data/user.dbaronmo.v24.mc.410644.PoPy8_A14_st_schan_lept_top.M4.e6527_s3126_r10201_p4097.sv2_Le/user.dbaronmo.21943394._000002.LepUniv_ttbar.root
-/mnt/NVME/HH//data/user.dbaronmo.v24.mc.410644.PoPy8_A14_st_schan_lept_top.M4.e6527_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920867._000001.LepUniv_ttbar.root
-/mnt/NVME/HH//data/user.dbaronmo.v24.mc.410644.PoPy8_A14_st_schan_lept_top.M4.e6527_s3126_r10724_p3972.sv1_Le/user.dbaronmo.21920867._000002.LepUniv_ttbar.root
-/mnt/NVME/HH//data/user.dbaronmo.v24.mc.410644.PoPy8_A14_st_schan_lept_top.M4.e6527_s3126_r9364_p4097.sv2_Le/user.dbaronmo.21943342._000001.LepUniv_ttbar.root

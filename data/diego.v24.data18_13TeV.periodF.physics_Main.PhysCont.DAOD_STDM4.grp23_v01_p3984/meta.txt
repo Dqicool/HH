@@ -1,0 +1,14 @@
+logicalDatasetName: data18_13TeV.periodF.physics_Main.PhysCont.DAOD_STDM4.grp23_v01_p3984
+created           : 2019-11-14 11:51:55
+version           : grp23_v01_p3984
+creationComment   : p3984 supercontainer creation with tag v01
+nFiles            : 0
+totalEvents       : 0
+totalSize         : 0
+dataType          : DAOD_STDM4
+runNumber         : periodF
+createdBy         : bili
+lastModified      : 2020-09-29 19:59:00
+amiStatus         : VALID
+added_comment     : NULL
+contained_dataset : data18_13TeV.00352436.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;data18_13TeV.00352274.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;data18_13TeV.00352394.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;data18_13TeV.00352514.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;data18_13TeV.00352340.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;data18_13TeV.00352448.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;data18_13TeV.00352494.physics_Main.deriv.DAOD_STDM4.f938_m1979_p3984;

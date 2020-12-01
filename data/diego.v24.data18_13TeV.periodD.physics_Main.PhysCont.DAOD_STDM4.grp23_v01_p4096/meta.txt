@@ -1,0 +1,14 @@
+logicalDatasetName: data18_13TeV.periodD.physics_Main.PhysCont.DAOD_STDM4.grp23_v01_p4096
+created           : 2020-05-02 17:19:19
+version           : grp23_v01_p4096
+creationComment   : p4096 supercontainer creation with tag v01
+nFiles            : 9172
+totalEvents       : 340821832
+totalSize         : 16173131368193
+dataType          : DAOD_STDM4
+runNumber         : periodD
+createdBy         : bili
+lastModified      : 2020-05-02 17:57:16
+amiStatus         : VALID
+added_comment     : NULL
+contained_dataset : data18_13TeV.00350310.physics_Main.deriv.DAOD_STDM4.f934_m1960_p4096;data18_13TeV.00351832.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00351062.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00350880.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00351160.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00351325.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00350440.physics_Main.deriv.DAOD_STDM4.f934_m1960_p4096;data18_13TeV.00351671.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00351894.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00351550.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00351455.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00351364.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00350682.physics_Main.deriv.DAOD_STDM4.f936_m1972_p4096;data18_13TeV.00351636.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00351223.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00350751.physics_Main.deriv.DAOD_STDM4.f936_m1972_p4096;data18_13TeV.00351698.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00352056.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00350361.physics_Main.deriv.DAOD_STDM4.f934_m1960_p4096;data18_13TeV.00351296.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00350479.physics_Main.deriv.DAOD_STDM4.f934_m1960_p4096;data18_13TeV.00350749.physics_Main.deriv.DAOD_STDM4.f936_m1972_p4096;data18_13TeV.00350803.physics_Main.deriv.DAOD_STDM4.f936_m1972_p4096;data18_13TeV.00350923.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00351628.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00352107.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00351359.physics_Main.deriv.DAOD_STDM4.f937_m1972_p4096;data18_13TeV.00350531.physics_Main.deriv.DAOD_STDM4.f934_m1960_p4096;data18_13TeV.00351969.physics_Main.deriv.DAOD_STDM4.f938_m1979_p4096;data18_13TeV.00350848.physics_Main.deriv.DAOD_STDM4.f936_m1972_p4096;data18_13TeV.00350842.physics_Main.deriv.DAOD_STDM4.f936_m1972_p4096;

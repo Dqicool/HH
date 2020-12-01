@@ -38,6 +38,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #define Z_MASS 91.1876
 #define H_MASS 125.18

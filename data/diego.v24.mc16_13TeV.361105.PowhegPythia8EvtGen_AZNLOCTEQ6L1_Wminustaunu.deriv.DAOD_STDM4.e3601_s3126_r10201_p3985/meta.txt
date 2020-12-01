@@ -1,0 +1,55 @@
+identifier                       : 1865787
+logicalDatasetName               : mc16_13TeV.361105.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wminustaunu.deriv.DAOD_STDM4.e3601_s3126_r10201_p3985
+nFiles                           : 239
+totalEvents                      : 24964000
+totalSize                        : 1631554242165
+dataType                         : DAOD_STDM4
+prodsysStatus                    : ALL EVENTS AVAILABLE
+completion                       : 100.00
+ecmEnergy                        : 13000000
+physicsComment                   : NULL
+PDF                              : NULL
+version                          : e3601_s3126_r10201_p3985
+AtlasRelease                     : AthDerivation_21.2.78.0
+crossSection                     : 8.2831
+genFiltEff                       : 1
+datasetNumber                    : 361105
+principalPhysicsGroup            : phys-sm
+physicsShort                     : PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wminustaunu
+requestedBy                      : prodsys
+generatorName                    : Powheg(v1_r2856)+Pythia8(v8.186)+EvtGen(v1.2.0)+Photospp
+geometryVersion                  : ATLAS-R2-2016-01-00-01
+conditionsTag                    : OFLCOND-MC16-SDR-20
+lastModified                     : 2020-01-26 08:49:56
+created                          : 2020-01-26 05:10:25
+generatorTune                    : AZNLO CTEQ6L1
+amiStatus                        : VALID
+beamType                         : collisions
+productionStep                   : deriv
+projectName                      : mc16_13TeV
+statsAlgorithm                   : exclude_outliers
+beam_energy                      : 6500000
+keywords                         : drellyan, sm, tau, electroweak, w, neutrino, nlo
+crossSection_mean                : 8.2831E+00
+[IOVDbGlobalTag                  : OFLCOND-MC16-SDR-14]
+integrity                        : true
+GenFiltEff_mean                  : 1.0000E+00
+file_type                        : pool
+run_number                       : [361105]
+lumiBN                           : [0]
+added_comment                    : NULL
+genFiltEff@MCGN                  : 1.0000E+00
+crossSection@MCGN                : 8.2829E+00
+crossSectionRef@PMG              : XsecWminusPowPy
+kFactor@PMG                      : 1.03578599715
+processGroup@PMG                 : Wjets_PowPy8_incl
+crossSectionTotalRelUncertUP@SUSY: 0.05
+keyword                          : drellyan, electroweak, neutrino, nlo, sm, tau, w
+prodsysIdentifier_0              : 19826650
+taskStatus_0                     : DONE
+TIDState_0                       : added
+task_lastModified_0              : 2020-01-26 08:41:51
+prodsysIdentifier_1              : 19826640
+taskStatus_1                     : DONE
+TIDState_1                       : added
+task_lastModified_1              : 2020-01-26 05:06:08

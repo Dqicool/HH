@@ -1,0 +1,50 @@
+identifier                       : 1631144
+logicalDatasetName               : mc16_13TeV.361108.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau.deriv.DAOD_STDM4.e3601_s3126_r10724_p3975
+nFiles                           : 632
+totalEvents                      : 64740600
+totalSize                        : 4448146086482
+dataType                         : DAOD_STDM4
+prodsysStatus                    : ALL EVENTS AVAILABLE
+completion                       : 100.00
+ecmEnergy                        : 13000000
+physicsComment                   : NULL
+PDF                              : NULL
+version                          : e3601_s3126_r10724_p3975
+AtlasRelease                     : AthDerivation_21.2.76.0
+crossSection                     : 1.9011
+genFiltEff                       : 1
+datasetNumber                    : 361108
+principalPhysicsGroup            : phys-sm
+physicsShort                     : PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau
+requestedBy                      : prodsys
+generatorName                    : Powheg+Pythia8+EvtGen+Photospp
+geometryVersion                  : ATLAS-R2-2016-01-00-01
+conditionsTag                    : OFLCOND-MC16-SDR-25
+lastModified                     : 2019-10-05 09:02:38
+created                          : 2019-10-04 09:11:28
+generatorTune                    : AZNLO CTEQ6L1
+amiStatus                        : VALID
+beamType                         : collisions
+productionStep                   : deriv
+projectName                      : mc16_13TeV
+statsAlgorithm                   : exclude_outliers
+beam_energy                      : 6500000
+keywords                         : drellyan, 2tau, electroweak, sm, z, nlo
+GenFiltEff_mean                  : 1.0000E+00
+crossSection_mean                : 1.9011E+00
+added_comment                    : NULL
+genFiltEff@MCGN                  : 1.0000E+00
+crossSection@MCGN                : 1.9011E+00
+crossSectionRef@PMG              : XsecZleptlept60PowPy
+kFactor@PMG                      : 1.02605444217
+processGroup@PMG                 : Zjets_PowPy8_incl
+crossSectionTotalRelUncertUP@SUSY: 0.05
+keyword                          : 2tau, drellyan, electroweak, nlo, sm, z
+prodsysIdentifier_0              : 19288536
+taskStatus_0                     : DONE
+TIDState_0                       : added
+task_lastModified_0              : 2019-10-04 07:14:38
+prodsysIdentifier_1              : 19288527
+taskStatus_1                     : DONE
+TIDState_1                       : added
+task_lastModified_1              : 2019-10-05 06:50:26

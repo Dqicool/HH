@@ -1,0 +1,55 @@
+identifier           : 1975620
+logicalDatasetName   : mc16_13TeV.410646.PowhegPythia8EvtGen_A14_Wt_DR_inclusive_top.deriv.DAOD_STDM4.e6552_s3126_r9364_p4097
+nFiles               : 222
+totalEvents          : 9987000
+totalSize            : 826416897549
+dataType             : DAOD_STDM4
+prodsysStatus        : ALL EVENTS AVAILABLE
+completion           : 100.00
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NULL
+version              : e6552_s3126_r9364_p4097
+AtlasRelease         : AthDerivation_21.2.90.0
+crossSection         : 0.037935
+genFiltEff           : 1
+datasetNumber        : 410646
+principalPhysicsGroup: gen-user
+physicsShort         : PowhegPythia8EvtGen_A14_Wt_DR_inclusive_top
+requestedBy          : prodsys
+generatorName        : Powheg+EvtGen(v1.6.0)
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-16
+lastModified         : 2020-04-07 23:28:20
+created              : 2020-04-06 03:20:30
+generatorTune        : A14 NNPDF23LO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : top, wt, singletop, sm, inclusive
+crossSection_mean    : 3.7935E-02
+weights              : Truncatednominal  |  muR = 1.00, muF = 2.00  |  muR = 1.00, muF = 0.50  |  muR = 2.00, muF = 1.00  |  muR = 0.50, muF = 1.00  |  muR = 0.50, muF = 0.50  |  muR = 2.00, muF = 2.00  |  muR = 2.00, muF = 0.50  |  muR = 0.50, muF = 2.00  |  PDF set = 25200
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+integrity            : true
+GenFiltEff_mean      : 1.0000E+00
+file_type            : pool
+run_number           : [410646]
+lumiBN               : [0]
+added_comment        : NULL
+genFiltEff@MCGN      : 1.0000E+00
+crossSectionRef@PMG  : XsecSingleTopWtchan
+crossSection@MCGN    : 3.7935E-02
+processGroup@PMG     : SingleTop
+kFactor@PMG          : 0.9450
+keyword              : inclusive, singletop, sm, top, wt
+prodsysIdentifier_0  : 20930872
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2020-04-07 13:46:54
+prodsysIdentifier_1  : 20930876
+taskStatus_1         : DONE
+TIDState_1           : added
+task_lastModified_1  : 2020-04-06 02:52:07

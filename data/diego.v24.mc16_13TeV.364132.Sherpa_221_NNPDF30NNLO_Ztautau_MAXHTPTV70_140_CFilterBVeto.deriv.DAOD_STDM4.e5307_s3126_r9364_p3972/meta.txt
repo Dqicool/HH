@@ -1,0 +1,57 @@
+identifier                        : 1621639
+logicalDatasetName                : mc16_13TeV.364132.Sherpa_221_NNPDF30NNLO_Ztautau_MAXHTPTV70_140_CFilterBVeto.deriv.DAOD_STDM4.e5307_s3126_r9364_p3972
+nFiles                            : 91
+totalEvents                       : 1999200
+totalSize                         : 108609168246
+dataType                          : DAOD_STDM4
+prodsysStatus                     : ALL EVENTS AVAILABLE
+completion                        : 100.00
+ecmEnergy                         : 13000000
+physicsComment                    : NULL
+PDF                               : NNPDF30NNLO
+version                           : e5307_s3126_r9364_p3972
+AtlasRelease                      : AthDerivation_21.2.75.0
+crossSection                      : 0.11046
+genFiltEff                        : 0.18905
+datasetNumber                     : 364132
+principalPhysicsGroup             : gen-user
+physicsShort                      : Sherpa_221_NNPDF30NNLO_Ztautau_MAXHTPTV70_140_CFilterBVeto
+requestedBy                       : prodsys
+generatorName                     : Sherpa(v2.2.1)
+geometryVersion                   : ATLAS-R2-2016-01-00-01
+conditionsTag                     : OFLCOND-MC16-SDR-16
+lastModified                      : 2019-09-28 15:21:42
+created                           : 2019-09-28 06:04:07
+generatorTune                     : NNPDF3.0 NNLO
+amiStatus                         : VALID
+beamType                          : collisions
+productionStep                    : deriv
+projectName                       : mc16_13TeV
+statsAlgorithm                    : exclude_outliers
+beam_energy                       : 6500000
+keywords                          : jets, z, 2tau, nlo, sm
+genFilterNames                    : HeavyFlavorHadronFilter
+crossSection_mean                 : 1.1046E-01
+[IOVDbGlobalTag                   : OFLCOND-MC16-SDR-14]
+integrity                         : true
+GenFiltEff_mean                   : 1.8905E-01
+file_type                         : pool
+run_number                        : [364132]
+lumiBN                            : [0]
+added_comment                     : NULL
+crossSection@MCGN                 : 1.1046E-01
+kFactor@PMG                       : 0.9751
+crossSectionRef@PMG               : XsecZleptlept40Sherpa22
+processGroup@PMG                  : Zjets_Sherpa221
+genFiltEff@MCGN                   : 1.8905E-01
+crossSectionTotalRelUncertUP@PMG  : 0.05
+crossSectionTotalRelUncertDOWN@PMG: 0.05
+keyword                           : 2tau, jets, nlo, sm, z
+prodsysIdentifier_0               : 19242786
+taskStatus_0                      : DONE
+TIDState_0                        : added
+task_lastModified_0               : 2019-09-28 04:13:15
+prodsysIdentifier_1               : 19242776
+taskStatus_1                      : DONE
+TIDState_1                        : added
+task_lastModified_1               : 2019-09-28 14:28:19

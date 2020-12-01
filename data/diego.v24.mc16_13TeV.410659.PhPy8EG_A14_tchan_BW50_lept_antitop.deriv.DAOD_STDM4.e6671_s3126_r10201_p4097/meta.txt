@@ -1,0 +1,55 @@
+identifier           : 1981639
+logicalDatasetName   : mc16_13TeV.410659.PhPy8EG_A14_tchan_BW50_lept_antitop.deriv.DAOD_STDM4.e6671_s3126_r10201_p4097
+nFiles               : 211
+totalEvents          : 18338000
+totalSize            : 1511995341134
+dataType             : DAOD_STDM4
+prodsysStatus        : EVENTS PARTIALLY AVAILABLE
+completion           : 59.33
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NULL
+version              : e6671_s3126_r10201_p4097
+AtlasRelease         : AthDerivation_21.2.90.0
+crossSection         : 0.022173
+genFiltEff           : 1
+datasetNumber        : 410659
+principalPhysicsGroup: gen-user
+physicsShort         : PhPy8EG_A14_tchan_BW50_lept_antitop
+requestedBy          : prodsys
+generatorName        : Powheg+Pythia8.230+EvtGen
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-20
+lastModified         : 2020-04-23 05:40:20
+created              : 2020-04-09 08:27:16
+generatorTune        : A14 NNPDF23LO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : lepton, top, sm
+crossSection_mean    : 2.2173E-02
+weights              : Truncatednominal  |  muR = 1.00, muF = 2.00  |  muR = 1.00, muF = 0.50  |  muR = 2.00, muF = 1.00  |  muR = 0.50, muF = 1.00  |  muR = 0.50, muF = 0.50  |  muR = 2.00, muF = 2.00  |  muR = 2.00, muF = 0.50  |  muR = 0.50, muF = 2.00  |  PDF set = 25410
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+integrity            : true
+GenFiltEff_mean      : 1.0000E+00
+file_type            : pool
+run_number           : [410659]
+lumiBN               : [0]
+added_comment        : NULL
+genFiltEff@MCGN      : 1.0000E+00
+crossSectionRef@PMG  : XsecSingleTopTchanATBR
+crossSection@MCGN    : 2.2173E-02
+processGroup@PMG     : SingleTop
+kFactor@PMG          : 1.1849
+keyword              : lepton, sm, top
+prodsysIdentifier_0  : 20932813
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2020-04-09 04:11:16
+prodsysIdentifier_1  : 20932816
+taskStatus_1         : FINISHED
+TIDState_1           : added
+task_lastModified_1  : 2020-04-23 02:34:14

@@ -1,0 +1,147 @@
+identifier                       : 1859247
+logicalDatasetName               : mc16_13TeV.361107.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu.deriv.DAOD_STDM4.e3601_s3126_r9364_p3985
+nFiles                           : 0
+totalEvents                      : 0
+totalSize                        : 0
+dataType                         : DAOD_STDM4
+prodsysStatus                    : ALL DATA DELETED
+completion                       : N/A
+ecmEnergy                        : 13000000
+physicsComment                   : NULL
+PDF                              : NULL
+version                          : e3601_s3126_r9364_p3985
+AtlasRelease                     : AthDerivation_21.2.78.0
+crossSection                     : 1.9011
+genFiltEff                       : 1
+datasetNumber                    : 361107
+principalPhysicsGroup            : phys-sm
+physicsShort                     : PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu
+requestedBy                      : prodsys
+generatorName                    : Powheg(v1_r2856)+Pythia8(v8.186)+EvtGen(v1.2.0)+Photospp
+geometryVersion                  : ATLAS-R2-2016-01-00-01
+conditionsTag                    : OFLCOND-MC16-SDR-16
+lastModified                     : 2020-09-24 18:55:45
+created                          : 2020-01-24 23:40:26
+generatorTune                    : AZNLO CTEQ6L1
+amiStatus                        : TRASHED
+beamType                         : collisions
+productionStep                   : deriv
+projectName                      : mc16_13TeV
+statsAlgorithm                   : exclude_outliers
+beam_energy                      : 6500000
+keywords                         : drellyan, 2muon, electroweak, sm, z, nlo
+crossSection_mean                : 1.9011E+00
+[IOVDbGlobalTag                  : OFLCOND-MC16-SDR-14]
+integrity                        : true
+GenFiltEff_mean                  : 1.0000E+00
+file_type                        : pool
+run_number                       : [361107]
+lumiBN                           : [0]
+added_comment                    : NULL
+genFiltEff@MCGN                  : 1.0000E+00
+crossSection@MCGN                : 1.9011E+00
+crossSectionRef@PMG              : XsecZleptlept60PowPy
+kFactor@PMG                      : 1.02605444217
+processGroup@PMG                 : Zjets_PowPy8_incl
+crossSectionTotalRelUncertUP@SUSY: 0.05
+keyword                          : 2muon, drellyan, electroweak, nlo, sm, z
+prodsysIdentifier_0              : 19829357
+taskStatus_0                     : DATA_DELETED
+TIDState_0                       : removed
+task_lastModified_0              : 2020-09-24 18:40:15
+prodsysIdentifier_1              : 19829353
+taskStatus_1                     : DATA_DELETED
+TIDState_1                       : removed
+task_lastModified_1              : 2020-09-24 18:46:58
+prodsysIdentifier_2              : 19829365
+taskStatus_2                     : DATA_DELETED
+TIDState_2                       : removed
+task_lastModified_2              : 2020-09-24 18:54:21
+prodsysIdentifier_3              : 19829370
+taskStatus_3                     : DATA_DELETED
+TIDState_3                       : removed
+task_lastModified_3              : 2020-09-24 18:44:23
+prodsysIdentifier_4              : 19829428
+taskStatus_4                     : DATA_DELETED
+TIDState_4                       : removed
+task_lastModified_4              : 2020-09-24 18:43:58
+prodsysIdentifier_5              : 19829474
+taskStatus_5                     : DATA_DELETED
+TIDState_5                       : removed
+task_lastModified_5              : 2020-09-24 18:55:45
+prodsysIdentifier_6              : 19829420
+taskStatus_6                     : DATA_DELETED
+TIDState_6                       : removed
+task_lastModified_6              : 2020-09-24 18:44:48
+prodsysIdentifier_7              : 19829453
+taskStatus_7                     : DATA_DELETED
+TIDState_7                       : removed
+task_lastModified_7              : 2020-09-24 18:54:20
+prodsysIdentifier_8              : 19829463
+taskStatus_8                     : DATA_DELETED
+TIDState_8                       : removed
+task_lastModified_8              : 2020-09-24 18:44:48
+prodsysIdentifier_9              : 19829389
+taskStatus_9                     : DATA_DELETED
+TIDState_9                       : removed
+task_lastModified_9              : 2020-09-24 18:53:27
+prodsysIdentifier_10             : 19829559
+taskStatus_10                    : DATA_DELETED
+TIDState_10                      : removed
+task_lastModified_10             : 2020-09-24 18:54:29
+prodsysIdentifier_11             : 19829519
+taskStatus_11                    : DATA_DELETED
+TIDState_11                      : removed
+task_lastModified_11             : 2020-09-24 18:54:50
+prodsysIdentifier_12             : 19829540
+taskStatus_12                    : DATA_DELETED
+TIDState_12                      : removed
+task_lastModified_12             : 2020-09-24 18:55:44
+prodsysIdentifier_13             : 19829551
+taskStatus_13                    : DATA_DELETED
+TIDState_13                      : removed
+task_lastModified_13             : 2020-09-24 18:44:46
+prodsysIdentifier_14             : 19829482
+taskStatus_14                    : DATA_DELETED
+TIDState_14                      : removed
+task_lastModified_14             : 2020-09-24 18:43:57
+prodsysIdentifier_15             : 19829528
+taskStatus_15                    : DATA_DELETED
+TIDState_15                      : removed
+task_lastModified_15             : 2020-09-24 18:38:54
+prodsysIdentifier_16             : 19829361
+taskStatus_16                    : DATA_DELETED
+TIDState_16                      : removed
+task_lastModified_16             : 2020-09-24 18:55:44
+prodsysIdentifier_17             : 19829409
+taskStatus_17                    : DATA_DELETED
+TIDState_17                      : removed
+task_lastModified_17             : 2020-09-24 18:35:21
+prodsysIdentifier_18             : 19829399
+taskStatus_18                    : DATA_DELETED
+TIDState_18                      : removed
+task_lastModified_18             : 2020-09-24 18:37:54
+prodsysIdentifier_19             : 19829379
+taskStatus_19                    : DATA_DELETED
+TIDState_19                      : removed
+task_lastModified_19             : 2020-09-24 18:55:17
+prodsysIdentifier_20             : 19829442
+taskStatus_20                    : DATA_DELETED
+TIDState_20                      : removed
+task_lastModified_20             : 2020-09-24 18:43:57
+prodsysIdentifier_21             : 19829496
+taskStatus_21                    : DATA_DELETED
+TIDState_21                      : removed
+task_lastModified_21             : 2020-09-24 18:44:24
+prodsysIdentifier_22             : 19829489
+taskStatus_22                    : DATA_DELETED
+TIDState_22                      : removed
+task_lastModified_22             : 2020-09-24 18:55:16
+prodsysIdentifier_23             : 19829507
+taskStatus_23                    : DATA_DELETED
+TIDState_23                      : removed
+task_lastModified_23             : 2020-09-24 18:53:59
+prodsysIdentifier_24             : 19829574
+taskStatus_24                    : DATA_DELETED
+TIDState_24                      : removed
+task_lastModified_24             : 2020-09-24 18:44:08

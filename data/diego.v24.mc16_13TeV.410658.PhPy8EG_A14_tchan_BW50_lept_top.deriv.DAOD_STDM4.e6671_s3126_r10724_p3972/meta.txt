@@ -1,0 +1,51 @@
+identifier           : 1626715
+logicalDatasetName   : mc16_13TeV.410658.PhPy8EG_A14_tchan_BW50_lept_top.deriv.DAOD_STDM4.e6671_s3126_r10724_p3972
+nFiles               : 96
+totalEvents          : 8290900
+totalSize            : 690487299430
+dataType             : DAOD_STDM4
+prodsysStatus        : ALL EVENTS AVAILABLE
+completion           : 100.00
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NULL
+version              : e6671_s3126_r10724_p3972
+AtlasRelease         : AthDerivation_21.2.75.0
+crossSection         : 0.036995
+genFiltEff           : 1
+datasetNumber        : 410658
+principalPhysicsGroup: gen-user
+physicsShort         : PhPy8EG_A14_tchan_BW50_lept_top
+requestedBy          : prodsys
+generatorName        : Powheg+Pythia8.230+EvtGen
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-25
+lastModified         : 2019-10-02 05:50:52
+created              : 2019-10-02 05:50:51
+generatorTune        : A14 NNPDF23LO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : lepton, top, sm
+crossSection_mean    : 3.6995E-02
+weights              : Truncatednominal  |  muR = 1.00, muF = 2.00  |  muR = 1.00, muF = 0.50  |  muR = 2.00, muF = 1.00  |  muR = 0.50, muF = 1.00  |  muR = 0.50, muF = 0.50  |  muR = 2.00, muF = 2.00  |  muR = 2.00, muF = 0.50  |  muR = 0.50, muF = 2.00  |  PDF set = 25410
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+integrity            : true
+GenFiltEff_mean      : 1.0000E+00
+file_type            : pool
+run_number           : [410658]
+lumiBN               : [0]
+added_comment        : NULL
+genFiltEff@MCGN      : 1.0000E+00
+crossSectionRef@PMG  : XsecSingleTopTchanTBR
+processGroup@PMG     : SingleTop
+kFactor@PMG          : 1.1935
+crossSection@MCGN    : 3.6995E-02
+keyword              : lepton, sm, top
+prodsysIdentifier_0  : 19241329
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2019-10-02 03:48:57

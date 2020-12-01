@@ -1,0 +1,14 @@
+logicalDatasetName: data17_13TeV.periodI.physics_Main.PhysCont.DAOD_STDM4.grp23_v01_p3984
+created           : 2019-11-14 11:30:41
+version           : grp23_v01_p3984
+creationComment   : p3984 supercontainer creation with tag v01
+nFiles            : 7057
+totalEvents       : 279755151
+totalSize         : 14427419474258
+dataType          : DAOD_STDM4
+runNumber         : periodI
+createdBy         : bili
+lastModified      : 2020-07-25 09:59:19
+amiStatus         : VALID
+added_comment     : NULL
+contained_dataset : data17_13TeV.00336915.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00336852.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00336832.physics_Main.deriv.DAOD_STDM4.r10259_p3399_p3984;data17_13TeV.00337263.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337107.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337451.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337052.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337491.physics_Main.deriv.DAOD_STDM4.r10259_p3399_p3984;data17_13TeV.00336944.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337833.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00336927.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337404.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337542.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337156.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337335.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337371.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337005.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337662.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337176.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337215.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00337705.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;data17_13TeV.00336998.physics_Main.deriv.DAOD_STDM4.r10258_p3399_p3984;

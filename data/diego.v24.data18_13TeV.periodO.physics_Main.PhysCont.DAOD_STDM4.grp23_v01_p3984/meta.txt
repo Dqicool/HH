@@ -1,0 +1,14 @@
+logicalDatasetName: data18_13TeV.periodO.physics_Main.PhysCont.DAOD_STDM4.grp23_v01_p3984
+created           : 2019-11-14 11:53:07
+version           : grp23_v01_p3984
+creationComment   : p3984 supercontainer creation with tag v01
+nFiles            : 0
+totalEvents       : 0
+totalSize         : 0
+dataType          : DAOD_STDM4
+runNumber         : periodO
+createdBy         : bili
+lastModified      : 2020-09-29 20:26:51
+amiStatus         : VALID
+added_comment     : NULL
+contained_dataset : data18_13TeV.00361862.physics_Main.deriv.DAOD_STDM4.f988_m2025_p3984;data18_13TeV.00361795.physics_Main.deriv.DAOD_STDM4.f988_m2025_p3984;data18_13TeV.00363096.physics_Main.deriv.DAOD_STDM4.f1005_m2037_p3984;data18_13TeV.00363129.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362388.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362345.physics_Main.deriv.DAOD_STDM4.f988_m2032_p3984;data18_13TeV.00362776.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362297.physics_Main.deriv.DAOD_STDM4.f988_m2032_p3984;data18_13TeV.00362354.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00361738.physics_Main.deriv.DAOD_STDM4.f988_m2025_p3984;data18_13TeV.00363400.physics_Main.deriv.DAOD_STDM4.f997_m2032_p3984;data18_13TeV.00362661.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362552.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00363262.physics_Main.deriv.DAOD_STDM4.f997_m2032_p3984;data18_13TeV.00363198.physics_Main.deriv.DAOD_STDM4.f997_m2032_p3984;data18_13TeV.00363033.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362619.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362445.physics_Main.deriv.DAOD_STDM4.f993_m2032_p3984;data18_13TeV.00362204.physics_Main.deriv.DAOD_STDM4.f988_m2032_p3984;

@@ -1,0 +1,52 @@
+identifier           : 1973607
+logicalDatasetName   : mc16_13TeV.410644.PowhegPythia8EvtGen_A14_singletop_schan_lept_top.deriv.DAOD_STDM4.e6527_s3126_r10201_p4097
+nFiles               : 42
+totalEvents          : 2498000
+totalSize            : 205708163262
+dataType             : DAOD_STDM4
+prodsysStatus        : ALL EVENTS AVAILABLE
+completion           : 100.00
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NULL
+version              : e6527_s3126_r10201_p4097
+AtlasRelease         : AthDerivation_21.2.90.0
+crossSection         : 0.0020267
+genFiltEff           : 1
+datasetNumber        : 410644
+principalPhysicsGroup: gen-user
+physicsShort         : PowhegPythia8EvtGen_A14_singletop_schan_lept_top
+requestedBy          : prodsys
+generatorName        : Powheg+EvtGen(v1.6.0)
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-20
+lastModified         : 2020-04-04 05:34:10
+created              : 2020-04-04 05:34:09
+generatorTune        : A14 NNPDF23LO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : schannel, top, singletop
+crossSection_mean    : 2.0267E-03
+weights              : Truncatednominal  |  muR = 1.00, muF = 2.00  |  muR = 1.00, muF = 0.50  |  muR = 2.00, muF = 1.00  |  muR = 0.50, muF = 1.00  |  muR = 0.50, muF = 0.50  |  muR = 2.00, muF = 2.00  |  muR = 2.00, muF = 0.50  |  muR = 0.50, muF = 2.00  |  PDF set = 25200
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+integrity            : true
+GenFiltEff_mean      : 1.0000E+00
+file_type            : pool
+run_number           : [410644]
+lumiBN               : [0]
+added_comment        : NULL
+genFiltEff@MCGN      : 1.0000E+00
+crossSectionRef@PMG  : XsecSingleTopSchanTBR
+crossSection@MCGN    : 2.0267E-03
+processGroup@PMG     : SingleTop
+kFactor@PMG          : 1.0170
+crossSection@PMG     : 0.002027
+keyword              : schannel, singletop, top
+prodsysIdentifier_0  : 20930867
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2020-04-04 02:52:30

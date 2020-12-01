@@ -1,0 +1,53 @@
+identifier           : 1822323
+logicalDatasetName   : mc16_13TeV.363356.Sherpa_221_NNPDF30NNLO_ZqqZll.deriv.DAOD_STDM4.e5525_e5984_s3126_r10724_r10726_p3983
+nFiles               : 577
+totalEvents          : 5992417
+totalSize            : 472361722101
+dataType             : DAOD_STDM4
+prodsysStatus        : ALL EVENTS AVAILABLE
+completion           : 100.00
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NNPDF30NNLO
+version              : e5525_e5984_s3126_r10724_r10726_p3983
+AtlasRelease         : AthDerivation_21.2.78.0
+crossSection         : 0.015569
+genFiltEff           : 0.14142
+datasetNumber        : 363356
+principalPhysicsGroup: gen-user
+physicsShort         : Sherpa_221_NNPDF30NNLO_ZqqZll
+requestedBy          : bili
+generatorName        : Sherpa(v2.2.1)
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-25
+lastModified         : 2020-01-25 20:33:24
+created              : 2020-01-06 19:50:03
+generatorTune        : NNPDF3.0 NNLO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : 2jet, diboson, nlo, sm, 2lepton
+genFilterNames       : DecaysFinalStateFilter
+crossSection_mean    : 1.5569E-02
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+integrity            : true
+GenFiltEff_mean      : 1.4142E-01
+file_type            : pool
+run_number           : [363356]
+lumiBN               : [0]
+added_comment        : NULL
+processGroup@PMG     : Diboson_Sherpa_Nominal
+genFiltEff@MCGN      : 1.4142E-01
+crossSection@MCGN    : 1.5569E-02
+keyword              : 2jet, 2lepton, diboson, nlo, sm
+prodsysIdentifier_0  : 19827648
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2020-01-25 04:12:58
+prodsysIdentifier_1  : 19827657
+taskStatus_1         : DONE
+TIDState_1           : added
+task_lastModified_1  : 2020-01-25 20:33:23

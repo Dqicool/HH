@@ -1,0 +1,51 @@
+identifier           : 1624949
+logicalDatasetName   : mc16_13TeV.410645.PowhegPythia8EvtGen_A14_singletop_schan_lept_antitop.deriv.DAOD_STDM4.e6527_s3126_r10201_p3972
+nFiles               : 43
+totalEvents          : 2500000
+totalSize            : 204219657272
+dataType             : DAOD_STDM4
+prodsysStatus        : ALL EVENTS AVAILABLE
+completion           : 100.00
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NULL
+version              : e6527_s3126_r10201_p3972
+AtlasRelease         : AthDerivation_21.2.75.0
+crossSection         : 0.0012675
+genFiltEff           : 1
+datasetNumber        : 410645
+principalPhysicsGroup: gen-user
+physicsShort         : PowhegPythia8EvtGen_A14_singletop_schan_lept_antitop
+requestedBy          : prodsys
+generatorName        : Powheg+EvtGen(v1.6.0)
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-20
+lastModified         : 2019-09-30 15:03:42
+created              : 2019-09-30 15:03:42
+generatorTune        : A14 NNPDF23LO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : schannel, top, singletop
+crossSection_mean    : 1.2675E-03
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+weights              : Truncatednominal  |  muR = 1.00, muF = 2.00  |  muR = 1.00, muF = 0.50  |  muR = 2.00, muF = 1.00  |  muR = 0.50, muF = 1.00  |  muR = 0.50, muF = 0.50  |  muR = 2.00, muF = 2.00  |  muR = 2.00, muF = 0.50  |  muR = 0.50, muF = 2.00  |  PDF set = 25200
+integrity            : true
+GenFiltEff_mean      : 1.0000E+00
+file_type            : pool
+run_number           : [410645]
+lumiBN               : [0]
+added_comment        : NULL
+genFiltEff@MCGN      : 1.0000E+00
+crossSectionRef@PMG  : XsecSingleTopSchanATBR
+crossSection@MCGN    : 1.2675E-03
+processGroup@PMG     : SingleTop
+kFactor@PMG          : 1.0167
+keyword              : schannel, singletop, top
+prodsysIdentifier_0  : 19239195
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2019-09-30 13:13:53

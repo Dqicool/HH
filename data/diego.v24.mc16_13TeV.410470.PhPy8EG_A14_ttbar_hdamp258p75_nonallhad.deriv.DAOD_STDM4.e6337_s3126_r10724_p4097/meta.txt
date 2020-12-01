@@ -1,0 +1,64 @@
+identifier           : 1979150
+logicalDatasetName   : mc16_13TeV.410470.PhPy8EG_A14_ttbar_hdamp258p75_nonallhad.deriv.DAOD_STDM4.e6337_s3126_r10724_p4097
+nFiles               : 6771
+totalEvents          : 199143000
+totalSize            : 21498446014932
+dataType             : DAOD_STDM4
+prodsysStatus        : EVENTS PARTIALLY AVAILABLE
+completion           : 99.97
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NULL
+version              : e6337_s3126_r10724_p4097
+AtlasRelease         : AthDerivation_21.2.90.0
+crossSection         : 0.72977
+genFiltEff           : 0.54382
+datasetNumber        : 410470
+principalPhysicsGroup: gen-user
+physicsShort         : PhPy8EG_A14_ttbar_hdamp258p75_nonallhad
+requestedBy          : prodsys
+generatorName        : Powheg+Pythia8(v8.230)+EvtGen(v1.6.0)
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-25
+lastModified         : 2020-04-15 03:44:41
+created              : 2020-04-07 23:28:28
+generatorTune        : A14 NNPDF23LO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : lepton, top, ttbar, sm
+genFilterNames       : TTbarWToLeptonFilter
+crossSection_mean    : 7.2977E-01
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+weights              : Truncatednominal  |  muR = 1.0, muF = 2.0  |  muR = 1.0, muF = 0.5  |  muR = 2.0, muF = 1.0  |  muR = 0.5, muF = 1.0  |  muR = 0.5, muF = 0.5  |  muR = 2.0, muF = 2.0  |  muR = 2.0, muF = 0.5  |  muR = 0.5, muF = 2.0  |  PDF set = 25200  |  PDF set = 131
+integrity            : true
+GenFiltEff_mean      : 5.4382E-01
+file_type            : pool
+run_number           : [410470]
+lumiBN               : [0]
+added_comment        : NULL
+crossSection@MCGN    : 7.2977E-01
+crossSectionRef@PMG  : XsecTTbarNominal
+processGroup@PMG     : TTbarBulk
+kFactor@PMG          : 1.13975636159
+genFiltEff@MCGN      : 5.4382E-01
+keyword              : lepton, sm, top, ttbar
+prodsysIdentifier_0  : 20931136
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2020-04-07 11:13:03
+prodsysIdentifier_1  : 20931143
+taskStatus_1         : DONE
+TIDState_1           : added
+task_lastModified_1  : 2020-04-15 02:51:11
+prodsysIdentifier_2  : 20931139
+taskStatus_2         : FINISHED
+TIDState_2           : added
+task_lastModified_2  : 2020-04-12 00:53:55
+prodsysIdentifier_3  : 20931141
+taskStatus_3         : DONE
+TIDState_3           : added
+task_lastModified_3  : 2020-04-08 23:51:20

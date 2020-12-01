@@ -1,0 +1,48 @@
+identifier           : 1859474
+logicalDatasetName   : mc16_13TeV.363357.Sherpa_221_NNPDF30NNLO_WqqZvv.deriv.DAOD_STDM4.e5525_s3126_r9364_p3975
+nFiles               : 61
+totalEvents          : 6000000
+totalSize            : 292755305987
+dataType             : DAOD_STDM4
+prodsysStatus        : ALL EVENTS AVAILABLE
+completion           : 100.00
+ecmEnergy            : 13000000
+physicsComment       : NULL
+PDF                  : NNPDF30NNLO
+version              : e5525_s3126_r9364_p3975
+AtlasRelease         : AthDerivation_21.2.76.0
+crossSection         : 0.0067975
+genFiltEff           : 1
+datasetNumber        : 363357
+principalPhysicsGroup: gen-user
+physicsShort         : Sherpa_221_NNPDF30NNLO_WqqZvv
+requestedBy          : prodsys
+generatorName        : Sherpa(v2.2.1)
+geometryVersion      : ATLAS-R2-2016-01-00-01
+conditionsTag        : OFLCOND-MC16-SDR-16
+lastModified         : 2020-01-25 02:07:32
+created              : 2020-01-25 02:07:30
+generatorTune        : NNPDF3.0 NNLO
+amiStatus            : VALID
+beamType             : collisions
+productionStep       : deriv
+projectName          : mc16_13TeV
+statsAlgorithm       : exclude_outliers
+beam_energy          : 6500000
+keywords             : 2jet, neutrino, diboson, nlo, sm
+crossSection_mean    : 6.7975E-03
+[IOVDbGlobalTag      : OFLCOND-MC16-SDR-14]
+integrity            : true
+GenFiltEff_mean      : 1.0000E+00
+file_type            : pool
+run_number           : [363357]
+lumiBN               : [0]
+added_comment        : NULL
+genFiltEff@MCGN      : 1.0000E+00
+processGroup@PMG     : Diboson_Sherpa_Nominal
+crossSection@MCGN    : 6.7975E-03
+keyword              : 2jet, diboson, neutrino, nlo, sm
+prodsysIdentifier_0  : 19709745
+taskStatus_0         : DONE
+TIDState_0           : added
+task_lastModified_0  : 2020-01-25 01:10:15
