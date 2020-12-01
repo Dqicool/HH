@@ -1,0 +1,44 @@
+{
+	"name": "Existing Dockerfile",
+
+	// Sets the run context to one level up instead of the .devcontainer folder.
+	"context": "..",
+
+	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+	"dockerFile": "../.devcontainer/Dockerfile",
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {     
+		"workbench.panel.defaultLocation": "right",
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"python.envFile": "${workspaceFolder}/build/env.txt",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": false,
+		"python.linting.flake8Enabled": true,
+		"python.linting.flake8Args": [
+			"--select=ATL,F,E7,E9,W6",
+			"--enable-extension=ATL902"
+		]
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [	"ms-vscode.cpptools",
+					"ms-python.python",
+					"twxs.cmake"],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Uncomment the next line to run commands after the container is created - for example installing curl.
+	"postCreateCommand": "source /release_setup.sh",
+
+	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	 "runArgs": [ "-v", "/cvmfs:/cvmfs" ],
+
+	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
+	//"mounts": [ "source=/cvmfs,target=/cvmfs,type=bind" ],
+
+	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode"
+	"containerEnv": { "ALRB_TutorialData": "/cvmfs/atlas.cern.ch/repo/tutorials/asg/cern-nov2020" }
+}

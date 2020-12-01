@@ -4,9 +4,7 @@
     FLDIR='/fileLists/'
     DATA='/data/'
     OUT='/output/sel_out/'
-    rm -rf $HHDIR/$OUT/*
     rm -rf $HHDIR/$DATA/$FLDIR/*
-    mkdir -p $HHDIR/$OUT
     declare arr
     i=0
     j=0
