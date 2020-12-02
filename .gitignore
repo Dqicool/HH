@@ -2,3 +2,4 @@
 .DS_Store
 *.hepmc
 *.hepmc.gz
+*.pem
