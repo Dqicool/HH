@@ -1,7 +1,7 @@
 
 #include "genAna.h"
 
-#define MT
+// #define MT
 #define DEBUG
 ROOT::Math::PtEtaPhiMVector TLV2MLV(TLorentzVector v)
 {
@@ -9,21 +9,13 @@ ROOT::Math::PtEtaPhiMVector TLV2MLV(TLorentzVector v)
     return ret;
 }
 
-std::vector<std::string> readFileList(const char *file_name)
-{
+std::vector<std::string> getFileName(std::string path){
     std::vector<std::string> ret;
-    std::string line;
-    std::ifstream myfile(file_name);
-    if (myfile.is_open())
+    for (const auto & entry : std::filesystem::directory_iterator(path))
     {
-        while (getline(myfile, line))
-        {
-            ret.push_back(line);
-        }
-        myfile.close();
+        if(entry.path() != path+"/meta.txt")
+            ret.push_back(entry.path());
     }
-    else
-        std::cout << "Unable to open file";
     return ret;
 }
 
@@ -263,14 +255,14 @@ void combineMeta(std::vector<std::string> in_filelist, const char *out_file)
 #ifndef DEBUG
 int main(int argc, char **argv)
 {
-    auto fl = readFileList(argv[1]);
+    auto fl = getFileName(argv[1]);
     convert(fl, argv[2]);
     combineMeta(fl, argv[2]);
 }
 #else
 int main(int argc, char **argv)
 {
-    auto fl = readFileList("/mnt/NVME/HH/data/fileLists/361104.txt");
+    auto fl =getFileName("/mnt/NVME/HH/data/qidong.v24.mc16_13TeV.363356.Sherpa_221_NNPDF30NNLO_ZqqZll.deriv.DAOD_STDM4.e5525_e5984_s3126_r10724_r10726_p3975");
     convert(fl, "debug.root");
     combineMeta(fl, "debug.root");
 }

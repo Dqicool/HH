@@ -69,6 +69,7 @@
         "*.cu": "cpp",
         "__nullptr": "cpp",
         "bitset": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "__split_buffer": "cpp"
     }
 }
